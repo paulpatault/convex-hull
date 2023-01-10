@@ -69,7 +69,7 @@ let lowest_leftmost (s:pt_set) : int
      if p.y <. rp.y || (p.y =. rp.y && p.x <=. rp.x) then
        begin
          r <- i;
-	 rp <- p;
+         rp <- p;
        end
   done;
   r
