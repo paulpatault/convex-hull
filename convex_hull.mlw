@@ -1,0 +1,376 @@
+
+
+(** {1 Convex Hull}
+
+  MPRI course 2-36-1 Proof of Programs - Project 2022-2023
+
+*)
+
+
+(** {2 Dummy symbols to fill holes in the remainder} *)
+
+module DummySymbols
+
+predicate __FORMULA_TO_BE_COMPLETED__
+constant __TERM_TO_BE_COMPLETED__ : 'a
+constant __VARIANT_TO_BE_COMPLETED__ : int
+let constant __EXPRESSION_TO_BE_COMPLETED__ : int = 0
+let constant __CONDITION_TO_BE_COMPLETED__ : bool = False
+let constant __FUNCTION_TO_BE_COMPLETED__ : int -> int = fun _ -> 0
+let constant __CODE_TO_BE_COMPLETED__ : unit = ()
+
+end
+
+
+
+(** {2 Points in the Plane, Sets of Points} *)
+
+module Point
+
+use export DummySymbols
+use export real.RealInfix
+use export int.Int
+
+(** Points in the plane are records of two real numbers *)
+
+type pt = { x : real ; y : real }
+
+(** Sets of points, represented as arrays *)
+
+use export array.Array
+
+type pt_set = array pt
+
+(** access in or outside indexes of a set *)
+
+predicate is_index (i:int) (s:pt_set) =
+  0 <= i < s.length
+
+
+(** A total order on points: (x1,y1) <= (x2,y2) if
+    y1 < y2 or y1 = y2 and x1 <= x2 *)
+
+predicate is_lower_pt (p1 p2:pt) =
+  p1.y <. p2.y \/ (p1.y = p2.y /\ p1.x <=. p2.x)
+
+
+(** QUESTION 1: compute the lowest-leftmost pt *)
+
+let lowest_leftmost (s:pt_set) : int
+  requires { __FORMULA_TO_BE_COMPLETED__ }
+  ensures { is_index result s }
+  ensures { forall i:int. is_index i s -> is_lower_pt s[result] s[i] }
+  =
+  let ref r = 0 in
+  let ref rp = s[0] in
+  for i = 1 to length s - 1 do
+     invariant { __FORMULA_TO_BE_COMPLETED__ }
+     let p = s[i] in
+     if p.y <. rp.y || (p.y =. rp.y && p.x <=. rp.x) then
+       begin
+         r <- i;
+	 rp <- p;
+       end
+  done;
+  r
+
+
+end
+
+
+
+
+
+(** {2 Specification of the counter-clockwise predicate} *)
+
+module CCW
+
+use Point
+
+(** The ccw predicate *)
+
+function crossproduct (p1 p2 p3:pt) : real =
+  (p2.x -. p1.x) *. (p3.y -. p1.y) -. (p3.x -. p1.x) *. (p2.y -. p1.y)
+
+predicate colinear (p1 p2 p3:pt) =
+  crossproduct p1 p2 p3 = 0.0
+
+predicate ccw (p1 p2 p3:pt) =
+  crossproduct p1 p2 p3 >. 0.0
+
+val ccw (p1 p2 p3:pt) : bool
+  ensures { result <-> ccw p1 p2 p3 }
+
+lemma knuth1:
+  forall p1 p2 p3:pt. ccw p1 p2 p3 -> ccw p2 p3 p1
+
+lemma knuth2:
+  forall p1 p2 p3:pt. ccw p1 p2 p3 -> not (ccw p2 p1 p3)
+
+lemma knuth3:
+  forall p1 p2 p3:pt.
+   not (colinear p1 p2 p3) -> ccw p1 p2 p3 \/ ccw p1 p3 p2
+
+lemma knuth4:
+  forall p1 p2 p3 q:pt.
+    ccw q p1 p2 ->
+    ccw q p2 p3 ->
+    ccw q p3 p1 ->
+    ccw p1 p2 p3
+
+lemma cramer:
+  forall p1 p2 p3 q1 q2:pt.
+    crossproduct q1 q2 p3 *. crossproduct q2 p1 p2 +.
+    crossproduct q1 q2 p1 *. crossproduct q2 p2 p3 =
+    crossproduct q1 q2 p2 *. crossproduct q2 p1 p3
+
+lemma knuth5_aux:
+  forall p1 p2 p3 q1 q2:pt.
+    ccw q1 q2 p1 /\ ccw q2 p2 p3 /\ ccw q1 q2 p3 /\ ccw q2 p1 p2 ->
+    crossproduct q1 q2 p2 *. crossproduct q2 p1 p3 >. 0.0 &&
+    (crossproduct q1 q2 p2 >. 0.0 -> crossproduct q2 p1 p3 >. 0.0)
+
+lemma knuth5:
+  forall p1 p2 p3 q1 q2:pt.
+    ccw q1 q2 p1 /\ ccw q1 q2 p2 /\ ccw q1 q2 p3 ->
+    ccw q2 p1 p2 /\ ccw q2 p2 p3 -> ccw q2 p1 p3
+
+
+
+(* QUESTION 2 *)
+
+(** (all_on_left s i j) is true when all points in s, except points at
+    index i and j themselves, are on the left of the vector s[i] s[j]
+    *)
+
+predicate all_on_left (s:pt_set) (i j:int) =
+  __FORMULA_TO_BE_COMPLETED__
+
+
+
+
+(* QUESTION 3 *)
+
+exception Exit
+
+let check_all_on_left (s:pt_set) (i j:int) : unit
+  requires { __FORMULA_TO_BE_COMPLETED__ }
+  ensures { all_on_left s i j }
+  raises { Exit -> not (all_on_left s i j) }
+=
+  let a = s[i] in let b = s[j] in
+  for k=0 to length s - 1 do
+    invariant { __FORMULA_TO_BE_COMPLETED__    }
+    if __CONDITION_TO_BE_COMPLETED__ then raise Exit
+  done
+
+
+
+end
+
+
+
+
+(** {2 Module for Paths} *)
+
+
+module Path
+
+  use int.Int
+
+  type path = {
+    mutable size : int;
+    ghost mutable elements : int -> int
+  }
+
+  predicate is_valid_index (i:int) (p:path) =
+    0 <= i < p.size
+
+  val create () : path
+    ensures { result.size = 0 }
+
+  val nth (p: path) (i: int) : int
+    requires { is_valid_index i p }
+    reads    { p }
+    ensures  { result = p.elements i }
+
+  val append (p:path) (v: int) : unit
+    writes  { p }
+    ensures { p.size = (old p.size) + 1 }
+    ensures { p.elements (old p.size) = v }
+    ensures { forall i. 0 <= i < (old p.size) -> p.elements i = (old p.elements) i }
+
+end
+
+
+
+
+
+module ConvexHull
+
+use Point
+use CCW
+use Path
+
+
+predicate distinct (p:path) =
+  forall i j:int.
+    is_valid_index i p /\ is_valid_index j p /\ i < j ->
+    p.elements i <> p.elements j
+
+
+
+
+(* QUESTION 4 *)
+
+predicate is_convex_hull (s:pt_set) (p:path) =
+  __FORMULA_TO_BE_COMPLETED__
+
+
+
+(* QUESTION 5 *)
+
+
+let check_is_convex_hull (s:pt_set) (p:path) : bool
+  requires { __FORMULA_TO_BE_COMPLETED__ }
+  ensures { result = True <-> is_convex_hull s p }
+=
+  __CODE_TO_BE_COMPLETED__;
+  try
+    __CODE_TO_BE_COMPLETED__;
+    True
+  with Exit -> False
+  end
+
+
+
+
+(** Properties assumed to characterize "general" set of points *)
+
+predicate no_colinear_triple (s:pt_set) =
+  forall i j k:int. is_index i s /\ is_index j s /\ is_index k s /\
+    i <> j /\ i <> k /\ j <> k -> not (colinear s[i] s[j] s[k])
+
+predicate unique_minimal_y (s:pt_set) (i:int) =
+  is_index i s /\
+    forall j:int. is_index j s /\ i <> j -> s[i].y <. s[j].y
+
+
+
+(** QUESTION 7 : the largest function (see QUESTION 6 later) *)
+
+
+(** extract the largest point `p` among set `s` for the relation
+
+      R(p1,p2) := ccw pivot p1 p2
+
+   All points are assumed to be on the left of the segment (base,pivot) *)
+
+let largest (s:pt_set) (pivot:int) (ghost base:pt) : int
+  requires { __FORMULA_TO_BE_COMPLETED__  }
+  ensures { __FORMULA_TO_BE_COMPLETED__    }
+=
+  let ref res = if pivot = 0 then 1 else 0 in
+  for i = res+1 to length s - 1 do
+    invariant { __FORMULA_TO_BE_COMPLETED__
+    }
+    if i <> pivot then
+      if ccw s[pivot] s[i] s[res] then
+           res <- i;
+
+  done;
+  res
+
+
+(** QUESTION 6: Jarvis, not proving termination *)
+
+function translate_left (p:pt) : pt =
+  { x = p.x -. 1.0 ; y = p.y }
+
+let jarvis_no_termination (s:pt_set) : path
+  requires { __FORMULA_TO_BE_COMPLETED__ }
+  diverges
+  ensures { is_convex_hull s result }
+=
+  let hd = lowest_leftmost s in
+  let p = create () in
+  append p hd;
+  let ghost ref base = translate_left s[hd] in
+  let next = largest s hd base in
+  append p next;
+  let ref oldpivot = hd in
+  let ref pivot = next in
+  try
+    while True do
+      invariant { __FORMULA_TO_BE_COMPLETED__      }
+      let next = largest s pivot s[oldpivot] in
+      if next = hd then raise Exit;
+      oldpivot <- pivot;
+      pivot <- next;
+      append p next;
+      done;
+    absurd
+  with Exit ->
+    p
+  end
+
+
+
+
+(** QUESTION 8: termination *)
+
+(* A suggested ghost function *)
+
+predicate range (f: int -> int) (n: int) (m:int) =
+    forall i: int. 0 <= i < n -> 0 <= f i < m
+  (** `range f n m` is true when `f` maps the domain
+      `(0..n-1)` into `(0..m-1)` *)
+
+predicate injective (f: int -> int) (n: int) =
+    forall i j: int. 0 <= i < j < n -> f i <> f j
+  (** `injective f n m` is true when `f` is an injection
+      from `(0..n-1)` to `(0..m-1)` *)
+
+let rec ghost inverse (l:int) (f:int -> int) (v:int) : int
+  requires { l >= 1 }
+  requires { range f l l }
+  requires { injective f l }
+  requires { 0 <= v < l }
+  variant { l }
+  ensures { 0 <= result < l /\ v = f result }
+= 0 (* code/proof to be completed *)
+
+
+
+let jarvis (s:pt_set) : path
+  requires { __FORMULA_TO_BE_COMPLETED__ }
+  ensures { is_convex_hull s result }
+=
+  let hd = lowest_leftmost s in
+  let p = create () in
+  append p hd;
+  let ghost ref base = translate_left (s[hd]) in
+  let next = largest s hd base in
+  append p next;
+  let ref oldpivot = hd in
+  let ref pivot = next in
+  try
+    while True do
+      invariant { __FORMULA_TO_BE_COMPLETED__      }
+      variant { __VARIANT_TO_BE_COMPLETED__ }
+      let next = largest s pivot s[oldpivot] in
+      if next = hd then raise Exit;
+      oldpivot <- pivot;
+      pivot <- next;
+      append p next;
+    done;
+    absurd
+  with Exit ->
+    p
+  end
+
+
+
+
+
+end
