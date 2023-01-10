@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE why3session PUBLIC "-//Why3//proof session v5//EN"
+"http://why3.lri.fr/why3session.dtd">
+<why3session shape_version="6">
+<prover id="0" name="CVC4" version="1.8" timelimit="5" steplimit="0" memlimit="1000"/>
+<file format="whyml">
+<path name=".."/><path name="convex_hull.mlw"/>
+<theory name="Point">
+ <goal name="lowest_leftmost&#39;vc" expl="VC for lowest_leftmost">
+ <proof prover="0"><result status="timeout" time="5.00" steps="1519673"/></proof>
+ <transf name="split_vc" >
+  <goal name="lowest_leftmost&#39;vc.0" expl="index in array bounds" proved="true">
+  <proof prover="0"><result status="valid" time="0.03" steps="5031"/></proof>
+  </goal>
+  <goal name="lowest_leftmost&#39;vc.1" expl="loop invariant init" proved="true">
+  <proof prover="0"><result status="valid" time="0.05" steps="5849"/></proof>
+  </goal>
+  <goal name="lowest_leftmost&#39;vc.2" expl="loop invariant init" proved="true">
+  <proof prover="0"><result status="valid" time="0.05" steps="5802"/></proof>
+  </goal>
+  <goal name="lowest_leftmost&#39;vc.3" expl="index in array bounds" proved="true">
+  <proof prover="0"><result status="valid" time="0.04" steps="5517"/></proof>
+  </goal>
+  <goal name="lowest_leftmost&#39;vc.4" expl="loop invariant preservation">
+  <proof prover="0"><result status="timeout" time="5.00" steps="1607004"/></proof>
+  <transf name="split_vc" >
+   <goal name="lowest_leftmost&#39;vc.4.0" expl="loop invariant preservation">
+   <proof prover="0"><result status="timeout" time="5.00" steps="1613193"/></proof>
+   </goal>
+   <goal name="lowest_leftmost&#39;vc.4.1" expl="loop invariant preservation">
+   <proof prover="0"><result status="timeout" time="5.00" steps="1611869"/></proof>
+   </goal>
+  </transf>
+  </goal>
+  <goal name="lowest_leftmost&#39;vc.5" expl="loop invariant preservation" proved="true">
+  <proof prover="0"><result status="valid" time="0.03" steps="6591"/></proof>
+  </goal>
+  <goal name="lowest_leftmost&#39;vc.6" expl="loop invariant preservation">
+  <proof prover="0"><result status="timeout" time="5.00" steps="1558998"/></proof>
+  <transf name="split_vc" >
+   <goal name="lowest_leftmost&#39;vc.6.0" expl="loop invariant preservation" proved="true">
+   <proof prover="0"><result status="valid" time="0.02" steps="5368"/></proof>
+   </goal>
+   <goal name="lowest_leftmost&#39;vc.6.1" expl="loop invariant preservation">
+   <proof prover="0"><result status="timeout" time="5.00" steps="1558929"/></proof>
+   </goal>
+  </transf>
+  </goal>
+  <goal name="lowest_leftmost&#39;vc.7" expl="loop invariant preservation" proved="true">
+  <proof prover="0"><result status="valid" time="0.02" steps="5522"/></proof>
+  </goal>
+  <goal name="lowest_leftmost&#39;vc.8" expl="postcondition" proved="true">
+  <proof prover="0"><result status="valid" time="0.03" steps="5208"/></proof>
+  </goal>
+  <goal name="lowest_leftmost&#39;vc.9" expl="postcondition" proved="true">
+  <proof prover="0"><result status="valid" time="0.03" steps="6067"/></proof>
+  </goal>
+  <goal name="lowest_leftmost&#39;vc.10" expl="out of loop bounds" proved="true">
+  <proof prover="0"><result status="valid" time="0.02" steps="5174"/></proof>
+  </goal>
+ </transf>
+ </goal>
+</theory>
+<theory name="CCW">
+ <goal name="knuth1" proved="true">
+ <proof prover="0"><result status="valid" time="0.03" steps="5584"/></proof>
+ </goal>
+ <goal name="knuth2" proved="true">
+ <proof prover="0"><result status="valid" time="0.03" steps="5774"/></proof>
+ </goal>
+ <goal name="knuth3" proved="true">
+ <proof prover="0"><result status="valid" time="0.03" steps="5874"/></proof>
+ </goal>
+ <goal name="knuth4" proved="true">
+ <proof prover="0"><result status="valid" time="0.03" steps="6957"/></proof>
+ </goal>
+ <goal name="cramer">
+ <proof prover="0"><result status="timeout" time="5.00" steps="197205"/></proof>
+ </goal>
+ <goal name="knuth5_aux" proved="true">
+ <proof prover="0"><result status="valid" time="0.79" steps="124533"/></proof>
+ </goal>
+ <goal name="knuth5" proved="true">
+ <proof prover="0"><result status="valid" time="0.04" steps="8868"/></proof>
+ </goal>
+ <goal name="check_all_on_left&#39;vc" expl="VC for check_all_on_left">
+ <proof prover="0"><result status="unknown" time="0.07" steps="16069"/></proof>
+ </goal>
+</theory>
+<theory name="ConvexHull">
+ <goal name="check_is_convex_hull&#39;vc" expl="VC for check_is_convex_hull" proved="true">
+ <proof prover="0"><result status="valid" time="0.03" steps="5919"/></proof>
+ </goal>
+ <goal name="largest&#39;vc" expl="VC for largest">
+ <proof prover="0"><result status="unknown" time="0.09" steps="19474"/></proof>
+ </goal>
+ <goal name="jarvis_no_termination&#39;vc" expl="VC for jarvis_no_termination">
+ <proof prover="0"><result status="unknown" time="0.08" steps="19618"/></proof>
+ </goal>
+ <goal name="inverse&#39;vc" expl="VC for inverse">
+ <proof prover="0"><result status="unknown" time="0.09" steps="19193"/></proof>
+ </goal>
+ <goal name="jarvis&#39;vc" expl="VC for jarvis">
+ <proof prover="0"><result status="unknown" time="0.08" steps="19940"/></proof>
+ </goal>
+</theory>
+</file>
+</why3session>

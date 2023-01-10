@@ -57,14 +57,15 @@ predicate is_lower_pt (p1 p2:pt) =
 (** QUESTION 1: compute the lowest-leftmost pt *)
 
 let lowest_leftmost (s:pt_set) : int
-  requires { __FORMULA_TO_BE_COMPLETED__ }
+  requires { length s > 0 }                                          (* car on accède à s[0] *)
   ensures { is_index result s }
   ensures { forall i:int. is_index i s -> is_lower_pt s[result] s[i] }
   =
   let ref r = 0 in
   let ref rp = s[0] in
   for i = 1 to length s - 1 do
-     invariant { __FORMULA_TO_BE_COMPLETED__ }
+     invariant { forall j:int. 0 <= j < i -> is_lower_pt s[r] s[j] } (* TODO : préservation ici *)
+     invariant { is_index r s }                                      (* pour le premier ensures*)
      let p = s[i] in
      if p.y <. rp.y || (p.y =. rp.y && p.x <=. rp.x) then
        begin
