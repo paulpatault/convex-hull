@@ -149,6 +149,8 @@ lemma knuth5:
 predicate all_on_left (s:pt_set) (i j:int) =
   forall k : int.
     is_index k s ->
+    is_index i s ->
+    is_index j s ->
     k <> i ->
     k <> j ->
     ccw s[i] s[j] s[k]
@@ -159,32 +161,15 @@ exception Exit
 
 let function sub = sub
 
-let lemma all_on_left_ccw (s: pt_set) (k i j: int) : unit
-  requires { k <> i }
-  requires { k <> j }
-  requires { is_index k s }
-  requires { is_index i s }
-  requires { is_index j s }
-  requires { all_on_left s i j }
-  ensures  { ccw s[i] s[j] s[k] }
-= ()
-
-let lemma not_ccw_not_all_on_left (s: pt_set) (k i j: int) : unit
-  requires { k <> i }
-  requires { k <> j }
+let lemma proof (s: pt_set) (k i j: int) : unit
   requires { is_index k s }
   requires { is_index i s }
   requires { is_index j s }
   requires { not ccw s[i] s[j] s[k] }
-  ensures  { not all_on_left s i j }
+  ensures { not all_on_left s i j }
+  (* ensures { not all_on_left s i j } *)
 = ()
 
-let lemma lemma_1 (s: pt_set) (i j: int) : unit
-  requires { is_index i s }
-  requires { is_index j s }
-  ensures { not ccw s[i] s[j] s[j] }
-  ensures { not ccw s[i] s[i] s[j] }
-= ()
 
 let check_all_on_left (s:pt_set) (i j:int) : unit
   requires { is_index i s } (* acces [s[i]] *)
@@ -195,10 +180,12 @@ let check_all_on_left (s:pt_set) (i j:int) : unit
   let a = s[i] in let b = s[j] in
   for k = 0 to length s - 1 do
     invariant { forall l: int. 0 <= l < k -> l <> i -> l <> j -> ccw a b s[l] }
-    invariant { k <> i -> k <> j -> not ccw s[i] s[j] s[k] -> not all_on_left s i j }
+    invariant { all_on_left (sub s 0 k) i j }
+    invariant { not ccw a b s[k] -> not all_on_left s i j }
     invariant { k > 0 -> is_index (k-1) s }
-    invariant { k > 0 -> k <> i -> k <> j -> ccw a b s[k-1] }
-    if k <> i && k <> j && not ccw a b s[k] then raise Exit
+    invariant { k > 0 -> ccw a b s[k-1] }
+    if k = i || k = j then continue;
+    if not ccw a b s[k] then raise Exit
   done
 
 end
