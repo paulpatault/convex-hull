@@ -19,6 +19,8 @@ let constant __CONDITION_TO_BE_COMPLETED__ : bool = False
 let constant __FUNCTION_TO_BE_COMPLETED__ : int -> int = fun _ -> 0
 let constant __CODE_TO_BE_COMPLETED__ : unit = ()
 
+let constant __MIN_PTS_NUM__ : int = 2
+
 end
 
 
@@ -141,6 +143,9 @@ lemma knuth5:
 
 (* QUESTION 2 *)
 
+let function diff2 (k i j: int) : bool
+= k <> i && k <> j
+
 (** (all_on_left s i j) is true when all points in s, except points at
     index i and j themselves, are on the left of the vector s[i] s[j]
     *)
@@ -149,8 +154,7 @@ lemma knuth5:
 predicate all_on_left (s:pt_set) (i j:int) =
   forall k : int.
     is_index k s ->
-    k <> i ->
-    k <> j ->
+    diff2 k i j ->
     ccw s[i] s[j] s[k]
 
 (* QUESTION 3 *)
@@ -185,9 +189,6 @@ let lemma lemma_1 (s: pt_set) (i j: int) : unit
   ensures { not ccw s[i] s[j] s[j] }
   ensures { not ccw s[i] s[i] s[j] }
 = () *)
-
-let function diff2 (k i j: int) : bool
-= k <> i && k <> j
 
 let check_all_on_left (s:pt_set) (i j:int) : unit
   requires { is_index i s }                          (* acces [s[i]] *)
@@ -248,9 +249,11 @@ use Point
 use CCW
 use Path
 
+(* use export array.NumOfEq
+    (* numof s (nth p i) > 0 *) *)
 
-predicate distinct (p:path) =
-  forall i j:int.
+predicate distinct (p:path)
+= forall i j:int.
     is_valid_index i p /\ is_valid_index j p /\ i < j ->
     p.elements i <> p.elements j
 
@@ -258,32 +261,37 @@ predicate distinct (p:path) =
 
 let function nth = Path.nth
 
-predicate is_convex_hull (s:pt_set) (p:path) = (* + not all_on_left ... ? *)
-  distinct p /\
-    forall i k: int.
-      is_valid_index i p ->
-      is_valid_index (i+1) p ->
-      is_index k s ->
-      diff2 k (nth p i) (nth p (i+1)) ->
-      ccw s[k] s[nth p i] s[nth p (i+1)]
+(* les indices du path [p] sont bien des indices de [s] *)
+predicate wf_path (p:path) (s:pt_set)
+= forall i: int.
+  is_valid_index i p ->
+  is_index (nth p i) s
 
-
+predicate is_convex_hull (s:pt_set) (p:path) =
+  wf_path p s ->
+  s.length >= __MIN_PTS_NUM__ -> (* si moins de 2 alors pas de i+1, 3 pas nécessaires car i-i+1 = ? *)
+  distinct p ->
+  forall i: int. is_valid_index i p ->
+    let j = if i + 1 = p.size then 0 else i+1 in
+    all_on_left s (nth p i) (nth p j)
 
 (* QUESTION 5 *)
 
-
 let check_is_convex_hull (s:pt_set) (p:path) : bool
-  requires { __FORMULA_TO_BE_COMPLETED__ }
+  requires { s.length >= __MIN_PTS_NUM__ }
+  requires { p.size >= __MIN_PTS_NUM__ }
+  requires { wf_path p s }
   ensures { result = True <-> is_convex_hull s p }
 =
-  __CODE_TO_BE_COMPLETED__;
   try
-    __CODE_TO_BE_COMPLETED__;
+    for i = 0 to p.size - 2 do
+      let a = nth p i in
+      let b = nth p (i+1) in
+      check_all_on_left s a b
+    done;
     True
   with Exit -> False
   end
-
-
 
 
 (** Properties assumed to characterize "general" set of points *)
