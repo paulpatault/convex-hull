@@ -4,183 +4,239 @@
 <why3session shape_version="6">
 <prover id="0" name="CVC4" version="1.8" timelimit="5" steplimit="0" memlimit="1000"/>
 <prover id="2" name="Alt-Ergo" version="2.4.2" timelimit="5" steplimit="0" memlimit="1000"/>
-<prover id="3" name="Z3" version="4.11.0" timelimit="10" steplimit="0" memlimit="4000"/>
+<prover id="3" name="Z3" version="4.11.0" timelimit="1" steplimit="0" memlimit="1000"/>
 <prover id="4" name="Alt-Ergo" version="2.4.1" timelimit="5" steplimit="0" memlimit="1000"/>
-<file format="whyml">
+<file format="whyml" proved="true">
 <path name=".."/><path name="convex_hull.mlw"/>
-<theory name="Point" proved="true">
- <goal name="lowest_leftmost&#39;vc" expl="VC for lowest_leftmost" proved="true">
- <proof prover="0"><result status="valid" time="0.09" steps="18204"/></proof>
- <transf name="split_vc" proved="true" >
-  <goal name="lowest_leftmost&#39;vc.0" expl="index in array bounds" proved="true">
-  <proof prover="2"><result status="valid" time="0.00" steps="2"/></proof>
-  </goal>
-  <goal name="lowest_leftmost&#39;vc.1" expl="loop invariant init" proved="true">
-  <proof prover="2"><result status="valid" time="0.00" steps="10"/></proof>
-  </goal>
-  <goal name="lowest_leftmost&#39;vc.2" expl="loop invariant init" proved="true">
-  <proof prover="0"><result status="valid" time="0.03" steps="5182"/></proof>
-  </goal>
-  <goal name="lowest_leftmost&#39;vc.3" expl="loop invariant init" proved="true">
-  <proof prover="0"><result status="valid" time="0.03" steps="5803"/></proof>
-  </goal>
-  <goal name="lowest_leftmost&#39;vc.4" expl="index in array bounds" proved="true">
-  <proof prover="0"><result status="valid" time="0.03" steps="5535"/></proof>
-  </goal>
-  <goal name="lowest_leftmost&#39;vc.5" expl="loop invariant preservation" proved="true">
-  <transf name="split_vc" proved="true" >
-   <goal name="lowest_leftmost&#39;vc.5.0" expl="loop invariant preservation" proved="true">
-   <proof prover="0"><result status="valid" time="0.04" steps="7481"/></proof>
-   </goal>
-   <goal name="lowest_leftmost&#39;vc.5.1" expl="loop invariant preservation" proved="true">
-   <proof prover="0"><result status="valid" time="0.04" steps="7824"/></proof>
-   </goal>
-  </transf>
-  </goal>
-  <goal name="lowest_leftmost&#39;vc.6" expl="loop invariant preservation" proved="true">
-  <proof prover="0"><result status="valid" time="0.02" steps="5606"/></proof>
-  </goal>
-  <goal name="lowest_leftmost&#39;vc.7" expl="loop invariant preservation" proved="true">
-  <proof prover="0"><result status="valid" time="0.03" steps="6766"/></proof>
-  </goal>
-  <goal name="lowest_leftmost&#39;vc.8" expl="loop invariant preservation" proved="true">
-  <transf name="split_vc" proved="true" >
-   <goal name="lowest_leftmost&#39;vc.8.0" expl="loop invariant preservation" proved="true">
-   <proof prover="0"><result status="valid" time="0.03" steps="5384"/></proof>
-   </goal>
-   <goal name="lowest_leftmost&#39;vc.8.1" expl="loop invariant preservation" proved="true">
-   <proof prover="0"><result status="valid" time="0.02" steps="6642"/></proof>
-   </goal>
-  </transf>
-  </goal>
-  <goal name="lowest_leftmost&#39;vc.9" expl="loop invariant preservation" proved="true">
-  <proof prover="0"><result status="valid" time="0.02" steps="5541"/></proof>
-  </goal>
-  <goal name="lowest_leftmost&#39;vc.10" expl="loop invariant preservation" proved="true">
-  <proof prover="0"><result status="valid" time="0.02" steps="5541"/></proof>
-  </goal>
-  <goal name="lowest_leftmost&#39;vc.11" expl="postcondition" proved="true">
-  <proof prover="0"><result status="valid" time="0.02" steps="5224"/></proof>
-  </goal>
-  <goal name="lowest_leftmost&#39;vc.12" expl="postcondition" proved="true">
-  <proof prover="0"><result status="valid" time="0.03" steps="6085"/></proof>
-  </goal>
-  <goal name="lowest_leftmost&#39;vc.13" expl="out of loop bounds" proved="true">
-  <proof prover="2"><result status="valid" time="0.00" steps="2"/></proof>
-  </goal>
- </transf>
- </goal>
-</theory>
 <theory name="CCW">
- <goal name="knuth1" proved="true">
+ <goal name="knuth1">
  <proof prover="0"><result status="valid" time="0.03" steps="5584"/></proof>
  </goal>
- <goal name="knuth2" proved="true">
+ <goal name="knuth2">
  <proof prover="0"><result status="valid" time="0.03" steps="5774"/></proof>
  </goal>
- <goal name="knuth3" proved="true">
+ <goal name="knuth3">
  <proof prover="0"><result status="valid" time="0.03" steps="5874"/></proof>
  </goal>
- <goal name="knuth4" proved="true">
+ <goal name="knuth4">
  <proof prover="0"><result status="valid" time="0.03" steps="6957"/></proof>
  </goal>
  <goal name="cramer">
  </goal>
- <goal name="knuth5_aux" proved="true">
- <transf name="split_vc" proved="true" >
-  <goal name="knuth5_aux.0" proved="true">
+ <goal name="knuth5_aux">
+ <transf name="split_vc" >
+  <goal name="knuth5_aux.0">
   <proof prover="0" timelimit="1"><result status="valid" time="0.25" steps="40004"/></proof>
   </goal>
-  <goal name="knuth5_aux.1" proved="true">
+  <goal name="knuth5_aux.1">
   <proof prover="0" timelimit="1"><result status="valid" time="0.31" steps="47153"/></proof>
   </goal>
  </transf>
  </goal>
- <goal name="knuth5" proved="true">
+ <goal name="knuth5">
  <proof prover="0"><result status="valid" time="0.04" steps="8868"/></proof>
  </goal>
- <goal name="all_on_left_ccw&#39;vc" expl="VC for all_on_left_ccw" proved="true">
+ <goal name="all_on_left_ccw&#39;vc" expl="VC for all_on_left_ccw">
  <proof prover="4"><result status="valid" time="0.01" steps="39"/></proof>
  </goal>
- <goal name="not_ccw_not_all_on_left&#39;vc" expl="VC for not_ccw_not_all_on_left" proved="true">
+ <goal name="not_ccw_not_all_on_left&#39;vc" expl="VC for not_ccw_not_all_on_left">
  <proof prover="4"><result status="valid" time="0.00" steps="14"/></proof>
  </goal>
- <goal name="lemma_1&#39;vc" expl="VC for lemma_1" proved="true">
+ <goal name="lemma_1&#39;vc" expl="VC for lemma_1">
  <proof prover="4" timelimit="1"><result status="valid" time="0.01" steps="49"/></proof>
  </goal>
  <goal name="check_all_on_left&#39;vc" expl="VC for check_all_on_left">
  <transf name="split_vc" >
-  <goal name="check_all_on_left&#39;vc.0" expl="index in array bounds" proved="true">
+  <goal name="check_all_on_left&#39;vc.0" expl="index in array bounds">
   <proof prover="4"><result status="valid" time="0.00" steps="5"/></proof>
   </goal>
-  <goal name="check_all_on_left&#39;vc.1" expl="index in array bounds" proved="true">
+  <goal name="check_all_on_left&#39;vc.1" expl="index in array bounds">
   <proof prover="4"><result status="valid" time="0.00" steps="5"/></proof>
   </goal>
-  <goal name="check_all_on_left&#39;vc.2" expl="loop invariant init" proved="true">
+  <goal name="check_all_on_left&#39;vc.2" expl="loop invariant init">
   <proof prover="4"><result status="valid" time="0.00" steps="8"/></proof>
   </goal>
-  <goal name="check_all_on_left&#39;vc.3" expl="loop invariant init" proved="true">
+  <goal name="check_all_on_left&#39;vc.3" expl="loop invariant init">
   <proof prover="0" timelimit="10" memlimit="4000" obsolete="true"><result status="timeout" time="10.00" steps="2316340"/></proof>
-  <proof prover="3" obsolete="true"><result status="timeout" time="10.00"/></proof>
+  <proof prover="3" timelimit="10" memlimit="4000" obsolete="true"><result status="timeout" time="10.00"/></proof>
   <proof prover="4"><result status="valid" time="0.01" steps="39"/></proof>
   </goal>
-  <goal name="check_all_on_left&#39;vc.4" expl="loop invariant init" proved="true">
-  <proof prover="4"><result status="valid" time="0.01" steps="6"/></proof>
+  <goal name="check_all_on_left&#39;vc.4" expl="loop invariant init">
+  <proof prover="4"><result status="valid" time="0.01" steps="13"/></proof>
   </goal>
-  <goal name="check_all_on_left&#39;vc.5" expl="loop invariant init" proved="true">
-  <proof prover="4"><result status="valid" time="0.00" steps="7"/></proof>
+  <goal name="check_all_on_left&#39;vc.5" expl="loop invariant init">
+  <proof prover="4"><result status="valid" time="0.00" steps="9"/></proof>
   </goal>
-  <goal name="check_all_on_left&#39;vc.6" expl="index in array bounds" proved="true">
+  <goal name="check_all_on_left&#39;vc.6" expl="index in array bounds">
   <proof prover="4"><result status="valid" time="0.00" steps="18"/></proof>
   </goal>
-  <goal name="check_all_on_left&#39;vc.7" expl="exceptional postcondition" proved="true">
+  <goal name="check_all_on_left&#39;vc.7" expl="exceptional postcondition">
   <proof prover="4"><result status="valid" time="0.00" steps="26"/></proof>
   </goal>
-  <goal name="check_all_on_left&#39;vc.8" expl="loop invariant preservation" proved="true">
-  <proof prover="4"><result status="valid" time="0.01" steps="68"/></proof>
+  <goal name="check_all_on_left&#39;vc.8" expl="loop invariant preservation">
+  <proof prover="4"><result status="valid" time="0.01" steps="61"/></proof>
   </goal>
   <goal name="check_all_on_left&#39;vc.9" expl="loop invariant preservation">
+  <proof prover="0" timelimit="1"><result status="timeout" time="1.00" steps="180836"/></proof>
+  <proof prover="3"><result status="timeout" time="1.00"/></proof>
+  <proof prover="4" timelimit="1"><result status="timeout" time="1.00"/></proof>
   <transf name="split_vc" >
    <goal name="check_all_on_left&#39;vc.9.0" expl="loop invariant preservation">
+   <proof prover="0" timelimit="1"><result status="timeout" time="1.00" steps="167403"/></proof>
+   <proof prover="3"><result status="timeout" time="1.00"/></proof>
+   <proof prover="4" timelimit="1"><result status="timeout" time="1.00"/></proof>
    <transf name="split_vc" >
     <goal name="check_all_on_left&#39;vc.9.0.0" expl="loop invariant preservation">
+    <proof prover="0" timelimit="1"><result status="timeout" time="1.00" steps="131292"/></proof>
+    <proof prover="3" timelimit="10" memlimit="4000"><undone/></proof>
+    <proof prover="4" timelimit="10" memlimit="4000"><result status="timeout" time="10.00"/></proof>
     </goal>
     <goal name="check_all_on_left&#39;vc.9.0.1" expl="loop invariant preservation">
-    <proof prover="0" timelimit="10" memlimit="4000"><result status="timeout" time="10.00" steps="2007823"/></proof>
+    <proof prover="0" timelimit="1"><result status="timeout" time="1.00" steps="190560"/></proof>
+    <proof prover="3"><result status="timeout" time="1.00"/></proof>
+    <proof prover="4" timelimit="10" memlimit="4000"><undone/></proof>
     </goal>
    </transf>
    </goal>
    <goal name="check_all_on_left&#39;vc.9.1" expl="loop invariant preservation">
+   <proof prover="0" timelimit="10" memlimit="4000"><undone/></proof>
+   <proof prover="3" timelimit="10" memlimit="4000"><result status="timeout" time="10.00"/></proof>
+   <proof prover="4" timelimit="10" memlimit="4000"><result status="timeout" time="10.00"/></proof>
    </goal>
   </transf>
   </goal>
-  <goal name="check_all_on_left&#39;vc.10" expl="loop invariant preservation" proved="true">
-  <proof prover="4"><result status="valid" time="0.01" steps="36"/></proof>
-  </goal>
-  <goal name="check_all_on_left&#39;vc.11" expl="loop invariant preservation">
+  <goal name="check_all_on_left&#39;vc.10" expl="loop invariant preservation">
+  <proof prover="0" timelimit="1"><result status="timeout" time="1.00" steps="142913"/></proof>
+  <proof prover="3"><result status="timeout" time="1.00"/></proof>
+  <proof prover="4" timelimit="1"><result status="timeout" time="1.00"/></proof>
   <transf name="split_vc" >
-   <goal name="check_all_on_left&#39;vc.11.0" expl="loop invariant preservation">
+   <goal name="check_all_on_left&#39;vc.10.0" expl="loop invariant preservation">
+   <proof prover="4" timelimit="1"><result status="valid" time="0.00" steps="12"/></proof>
+   </goal>
+   <goal name="check_all_on_left&#39;vc.10.1" expl="loop invariant preservation">
+   <proof prover="0" timelimit="1"><result status="timeout" time="1.00" steps="127272"/></proof>
+   <proof prover="3"><result status="timeout" time="1.00"/></proof>
+   <proof prover="4" timelimit="1"><result status="timeout" time="1.00"/></proof>
    <transf name="split_vc" >
-    <goal name="check_all_on_left&#39;vc.11.0.0" expl="loop invariant preservation" proved="true">
-    <proof prover="4" timelimit="1"><result status="valid" time="0.01" steps="30"/></proof>
+    <goal name="check_all_on_left&#39;vc.10.1.0" expl="loop invariant preservation">
+    <proof prover="0" timelimit="1"><result status="timeout" time="1.00" steps="131522"/></proof>
+    <proof prover="3"><result status="timeout" time="1.00"/></proof>
+    <proof prover="4" timelimit="1"><result status="timeout" time="1.00"/></proof>
+    <transf name="split_vc" >
+     <goal name="check_all_on_left&#39;vc.10.1.0.0" expl="loop invariant preservation">
+     <proof prover="3"><undone/></proof>
+     <proof prover="4" timelimit="1"><result status="timeout" time="1.00"/></proof>
+     </goal>
+     <goal name="check_all_on_left&#39;vc.10.1.0.1" expl="loop invariant preservation">
+     <proof prover="3"><undone/></proof>
+     <proof prover="4" timelimit="1"><result status="timeout" time="1.00"/></proof>
+     </goal>
+    </transf>
     </goal>
-    <goal name="check_all_on_left&#39;vc.11.0.1" expl="loop invariant preservation">
-    <proof prover="0" timelimit="10" memlimit="4000"><result status="timeout" time="10.00" steps="1250519"/></proof>
-    <proof prover="3"><result status="timeout" time="10.00"/></proof>
+    <goal name="check_all_on_left&#39;vc.10.1.1" expl="loop invariant preservation">
+    <proof prover="0" timelimit="1"><result status="timeout" time="1.00" steps="143502"/></proof>
+    <proof prover="3" timelimit="10" memlimit="4000"><undone/></proof>
     <proof prover="4" timelimit="10" memlimit="4000"><result status="timeout" time="10.00"/></proof>
     </goal>
    </transf>
    </goal>
+  </transf>
+  </goal>
+  <goal name="check_all_on_left&#39;vc.11" expl="loop invariant preservation">
+  <proof prover="0" timelimit="1"><result status="timeout" time="1.00" steps="162130"/></proof>
+  <proof prover="3"><result status="timeout" time="1.00"/></proof>
+  <proof prover="4" timelimit="1"><result status="timeout" time="1.00"/></proof>
+  <transf name="split_vc" >
+   <goal name="check_all_on_left&#39;vc.11.0" expl="loop invariant preservation">
+   <proof prover="0" timelimit="1"><result status="timeout" time="1.00" steps="135559"/></proof>
+   <proof prover="3"><result status="timeout" time="1.00"/></proof>
+   <proof prover="4" timelimit="1"><result status="timeout" time="1.00"/></proof>
+   <transf name="split_vc" >
+    <goal name="check_all_on_left&#39;vc.11.0.0" expl="loop invariant preservation">
+    <proof prover="4" timelimit="1"><result status="valid" time="0.00" steps="32"/></proof>
+    </goal>
+    <goal name="check_all_on_left&#39;vc.11.0.1" expl="loop invariant preservation">
+    <proof prover="0" timelimit="1"><result status="timeout" time="1.00" steps="136163"/></proof>
+    <proof prover="3"><result status="timeout" time="1.00"/></proof>
+    <proof prover="4" timelimit="10" memlimit="4000"><undone/></proof>
+    </goal>
+   </transf>
+   </goal>
    <goal name="check_all_on_left&#39;vc.11.1" expl="loop invariant preservation">
-   <proof prover="0" timelimit="10" memlimit="4000"><result status="timeout" time="10.00" steps="1932348"/></proof>
+   <proof prover="0" timelimit="10" memlimit="4000"><undone/></proof>
+   <proof prover="3" timelimit="10" memlimit="4000"><result status="timeout" time="10.00"/></proof>
+   <proof prover="4" timelimit="10" memlimit="4000"><result status="timeout" time="10.00"/></proof>
    </goal>
   </transf>
   </goal>
-  <goal name="check_all_on_left&#39;vc.12" expl="postcondition" proved="true">
-  <proof prover="4"><result status="valid" time="0.00" steps="194"/></proof>
+  <goal name="check_all_on_left&#39;vc.12" expl="postcondition">
+  <proof prover="4"><result status="valid" time="0.00" steps="6"/></proof>
   </goal>
-  <goal name="check_all_on_left&#39;vc.13" expl="postcondition" proved="true">
+  <goal name="check_all_on_left&#39;vc.13" expl="postcondition">
   <proof prover="4"><result status="valid" time="0.00" steps="8"/></proof>
+  </goal>
+ </transf>
+ </goal>
+</theory>
+<theory name="Point">
+ <goal name="lowest_leftmost&#39;vc" expl="VC for lowest_leftmost">
+ <proof prover="0"><result status="valid" time="0.09" steps="18204"/></proof>
+ <transf name="split_vc" >
+  <goal name="lowest_leftmost&#39;vc.0" expl="index in array bounds">
+  <proof prover="2"><result status="valid" time="0.00" steps="2"/></proof>
+  </goal>
+  <goal name="lowest_leftmost&#39;vc.1" expl="loop invariant init">
+  <proof prover="2"><result status="valid" time="0.00" steps="10"/></proof>
+  </goal>
+  <goal name="lowest_leftmost&#39;vc.2" expl="loop invariant init">
+  <proof prover="0"><result status="valid" time="0.03" steps="5182"/></proof>
+  </goal>
+  <goal name="lowest_leftmost&#39;vc.3" expl="loop invariant init">
+  <proof prover="0"><result status="valid" time="0.03" steps="5803"/></proof>
+  </goal>
+  <goal name="lowest_leftmost&#39;vc.4" expl="index in array bounds">
+  <proof prover="0"><result status="valid" time="0.03" steps="5535"/></proof>
+  </goal>
+  <goal name="lowest_leftmost&#39;vc.5" expl="loop invariant preservation">
+  <transf name="split_vc" >
+   <goal name="lowest_leftmost&#39;vc.5.0" expl="loop invariant preservation">
+   <proof prover="0"><result status="valid" time="0.04" steps="7481"/></proof>
+   </goal>
+   <goal name="lowest_leftmost&#39;vc.5.1" expl="loop invariant preservation">
+   <proof prover="0"><result status="valid" time="0.04" steps="7824"/></proof>
+   </goal>
+  </transf>
+  </goal>
+  <goal name="lowest_leftmost&#39;vc.6" expl="loop invariant preservation">
+  <proof prover="0"><result status="valid" time="0.02" steps="5606"/></proof>
+  </goal>
+  <goal name="lowest_leftmost&#39;vc.7" expl="loop invariant preservation">
+  <proof prover="0"><result status="valid" time="0.03" steps="6766"/></proof>
+  </goal>
+  <goal name="lowest_leftmost&#39;vc.8" expl="loop invariant preservation">
+  <transf name="split_vc" >
+   <goal name="lowest_leftmost&#39;vc.8.0" expl="loop invariant preservation">
+   <proof prover="0"><result status="valid" time="0.03" steps="5384"/></proof>
+   </goal>
+   <goal name="lowest_leftmost&#39;vc.8.1" expl="loop invariant preservation">
+   <proof prover="0"><result status="valid" time="0.02" steps="6642"/></proof>
+   </goal>
+  </transf>
+  </goal>
+  <goal name="lowest_leftmost&#39;vc.9" expl="loop invariant preservation">
+  <proof prover="0"><result status="valid" time="0.02" steps="5541"/></proof>
+  </goal>
+  <goal name="lowest_leftmost&#39;vc.10" expl="loop invariant preservation">
+  <proof prover="0"><result status="valid" time="0.02" steps="5541"/></proof>
+  </goal>
+  <goal name="lowest_leftmost&#39;vc.11" expl="postcondition">
+  <proof prover="0"><result status="valid" time="0.02" steps="5224"/></proof>
+  </goal>
+  <goal name="lowest_leftmost&#39;vc.12" expl="postcondition">
+  <proof prover="0"><result status="valid" time="0.03" steps="6085"/></proof>
+  </goal>
+  <goal name="lowest_leftmost&#39;vc.13" expl="out of loop bounds">
+  <proof prover="2"><result status="valid" time="0.00" steps="2"/></proof>
   </goal>
  </transf>
  </goal>

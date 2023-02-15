@@ -4,7 +4,7 @@
 <why3session shape_version="6">
 <prover id="0" name="CVC4" version="1.8" timelimit="5" steplimit="0" memlimit="1000"/>
 <prover id="2" name="Alt-Ergo" version="2.4.2" timelimit="5" steplimit="0" memlimit="1000"/>
-<prover id="3" name="Z3" version="4.11.0" timelimit="5" steplimit="0" memlimit="1000"/>
+<prover id="3" name="Z3" version="4.11.0" timelimit="10" steplimit="0" memlimit="4000"/>
 <prover id="4" name="Alt-Ergo" version="2.4.1" timelimit="5" steplimit="0" memlimit="1000"/>
 <file format="whyml">
 <path name=".."/><path name="convex_hull.mlw"/>
@@ -121,7 +121,7 @@
   </goal>
   <goal name="check_all_on_left&#39;vc.3" expl="loop invariant init" proved="true">
   <proof prover="0" timelimit="10" memlimit="4000" obsolete="true"><result status="timeout" time="10.00" steps="2316340"/></proof>
-  <proof prover="3" timelimit="10" memlimit="4000" obsolete="true"><result status="timeout" time="10.00"/></proof>
+  <proof prover="3" obsolete="true"><result status="timeout" time="10.00"/></proof>
   <proof prover="4"><result status="valid" time="0.01" steps="39"/></proof>
   </goal>
   <goal name="check_all_on_left&#39;vc.4" expl="loop invariant init" proved="true">
@@ -137,23 +137,47 @@
   <proof prover="4"><result status="valid" time="0.00" steps="26"/></proof>
   </goal>
   <goal name="check_all_on_left&#39;vc.8" expl="loop invariant preservation" proved="true">
-  <proof prover="4"><result status="valid" time="0.01" steps="86"/></proof>
+  <proof prover="4"><result status="valid" time="0.01" steps="68"/></proof>
   </goal>
   <goal name="check_all_on_left&#39;vc.9" expl="loop invariant preservation">
-  <proof prover="0"><result status="timeout" time="5.00" steps="923770"/></proof>
-  <proof prover="3"><result status="timeout" time="5.00"/></proof>
-  <proof prover="4"><result status="timeout" time="5.00"/></proof>
+  <transf name="split_vc" >
+   <goal name="check_all_on_left&#39;vc.9.0" expl="loop invariant preservation">
+   <transf name="split_vc" >
+    <goal name="check_all_on_left&#39;vc.9.0.0" expl="loop invariant preservation">
+    </goal>
+    <goal name="check_all_on_left&#39;vc.9.0.1" expl="loop invariant preservation">
+    <proof prover="0" timelimit="10" memlimit="4000"><result status="timeout" time="10.00" steps="2007823"/></proof>
+    </goal>
+   </transf>
+   </goal>
+   <goal name="check_all_on_left&#39;vc.9.1" expl="loop invariant preservation">
+   </goal>
+  </transf>
   </goal>
   <goal name="check_all_on_left&#39;vc.10" expl="loop invariant preservation" proved="true">
   <proof prover="4"><result status="valid" time="0.01" steps="36"/></proof>
   </goal>
   <goal name="check_all_on_left&#39;vc.11" expl="loop invariant preservation">
-  <proof prover="0"><result status="timeout" time="5.00" steps="766240"/></proof>
-  <proof prover="3"><result status="timeout" time="5.00"/></proof>
-  <proof prover="4"><result status="timeout" time="5.00"/></proof>
+  <transf name="split_vc" >
+   <goal name="check_all_on_left&#39;vc.11.0" expl="loop invariant preservation">
+   <transf name="split_vc" >
+    <goal name="check_all_on_left&#39;vc.11.0.0" expl="loop invariant preservation" proved="true">
+    <proof prover="4" timelimit="1"><result status="valid" time="0.01" steps="30"/></proof>
+    </goal>
+    <goal name="check_all_on_left&#39;vc.11.0.1" expl="loop invariant preservation">
+    <proof prover="0" timelimit="10" memlimit="4000"><result status="timeout" time="10.00" steps="1250519"/></proof>
+    <proof prover="3"><result status="timeout" time="10.00"/></proof>
+    <proof prover="4" timelimit="10" memlimit="4000"><result status="timeout" time="10.00"/></proof>
+    </goal>
+   </transf>
+   </goal>
+   <goal name="check_all_on_left&#39;vc.11.1" expl="loop invariant preservation">
+   <proof prover="0" timelimit="10" memlimit="4000"><result status="timeout" time="10.00" steps="1932348"/></proof>
+   </goal>
+  </transf>
   </goal>
   <goal name="check_all_on_left&#39;vc.12" expl="postcondition" proved="true">
-  <proof prover="4"><result status="valid" time="0.00" steps="186"/></proof>
+  <proof prover="4"><result status="valid" time="0.00" steps="194"/></proof>
   </goal>
   <goal name="check_all_on_left&#39;vc.13" expl="postcondition" proved="true">
   <proof prover="4"><result status="valid" time="0.00" steps="8"/></proof>
