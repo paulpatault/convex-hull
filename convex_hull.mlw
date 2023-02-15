@@ -159,7 +159,7 @@ exception Exit
 
 let function sub = sub
 
-let lemma all_on_left_ccw (s: pt_set) (k i j: int) : unit
+(* let lemma all_on_left_ccw (s: pt_set) (k i j: int) : unit
   requires { k <> i }
   requires { k <> j }
   requires { is_index k s }
@@ -184,22 +184,22 @@ let lemma lemma_1 (s: pt_set) (i j: int) : unit
   requires { is_index j s }
   ensures { not ccw s[i] s[j] s[j] }
   ensures { not ccw s[i] s[i] s[j] }
-= ()
+= () *)
+
+let function diff2 (k i j: int) : bool
+= k <> i && k <> j
 
 let check_all_on_left (s:pt_set) (i j:int) : unit
-  requires { is_index i s } (* acces [s[i]] *)
-  requires { is_index j s } (* idem [j] *)
-  ensures  { all_on_left s i j }
-  raises   { Exit -> not (all_on_left s i j) }
+  requires { is_index i s }                          (* acces [s[i]] *)
+  requires { is_index j s }                          (* idem [j] *)
+  ensures  { all_on_left s i j }                     (* sujet *)
+  raises   { Exit -> not (all_on_left s i j) }       (* postcondition exceptionnelle *)
 =
   let a = s[i] in let b = s[j] in
   for k = 0 to s.length - 1 do
-    invariant { forall l: int. 0 <= l < k -> l <> i -> l <> j -> ccw a b s[l] }
-    invariant { 0 <= k < s.length - 1 -> k <> i -> k <> j -> not ccw s[i] s[j] s[k] -> not all_on_left s i j }
-    invariant { 0 <= k <= s.length }
-    invariant { k > 0 -> (k-1) <> i -> (k-1) <> j -> ccw a b s[k-1] }
-    assert { k < s.length };
-    if k <> i && k <> j && not ccw a b s[k] then raise Exit
+    invariant { forall l: int. 0 <= l < k -> diff2 l i j -> ccw a b s[l] } (* tous les points passés sont bien à gauche de a-b *)
+    invariant { 0 <= k < s.length - 1 -> diff2 k i j -> not ccw a b s[k] -> not all_on_left s i j } (* permet de prouver la postcondition exceptionnelle : si le if est faux alors la postcondition est vraie *)
+    if diff2 k i j && not ccw a b s[k] then raise Exit
   done
 
 end
