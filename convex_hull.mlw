@@ -254,13 +254,18 @@ predicate distinct (p:path) =
     is_valid_index i p /\ is_valid_index j p /\ i < j ->
     p.elements i <> p.elements j
 
-
-
-
 (* QUESTION 4 *)
 
-predicate is_convex_hull (s:pt_set) (p:path) =
-  __FORMULA_TO_BE_COMPLETED__
+let function nth = Path.nth
+
+predicate is_convex_hull (s:pt_set) (p:path) = (* + not all_on_left ... ? *)
+  distinct p /\
+    forall i k: int.
+      is_valid_index i p ->
+      is_valid_index (i+1) p ->
+      is_index k s ->
+      diff2 k (nth p i) (nth p (i+1)) ->
+      ccw s[k] s[nth p i] s[nth p (i+1)]
 
 
 
