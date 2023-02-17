@@ -272,7 +272,7 @@ let function plus1mod (i len: int): int
 
 predicate is_convex_hull (s:pt_set) (p:path) =
   wf_path p s ->
-  s.length >= __MIN_PTS_NUM__ -> (* si moins de 2 alors pas de i+1, 3 pas nécessaires car i-i+1 = ? *)
+  s.length >= __MIN_PTS_NUM__ -> (* si moins de 2 alors pas de segment dont on doit être à gauche *)
   forall i: int. is_valid_index i p ->
     let j = plus1mod i p.size in
     all_on_left s (nth p i) (nth p j)
@@ -285,20 +285,15 @@ let check_is_convex_hull (s:pt_set) (p:path) : bool
   requires { wf_path p s }
   ensures { result = True <-> is_convex_hull s p }
 =
-  (* let ghost ref r = all_on_left s (nth p 0) (nth p 1) in *)
   try
     for i = 0 to p.size - 1 do
-        invariant { forall j:int. 0 <= j < i -> all_on_left s (nth p j) (nth p (plus1mod j p.size)) }
-        invariant { forall j:int. 0 <= j <= i -> is_valid_index j p }
-        (* invariant { i > 0 -> (r <-> all_on_left s (nth p (i-1)) (nth p i)) } *)
-        (* invariant { r = False -> not is_convex_hull s p } *)
+        invariant { forall j: int. 0 <= j < i -> all_on_left s (nth p j) (nth p (plus1mod j p.size)) }
+        invariant { forall j: int. 0 <= j < i -> is_valid_index j p }
         let j = plus1mod i p.size in
-        (* ghost (r <- False); *)
-        check_all_on_left s (nth p i) (nth p j);
-        (* ghost (r <- True); *)
-        (* assert { r = True } *)
+        let a = nth p i in
+        let b = nth p j in
+        check_all_on_left s a b
     done;
-    (* assert { r = True }; *)
     True
   with Exit -> False
   end
