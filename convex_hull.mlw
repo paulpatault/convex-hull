@@ -251,27 +251,52 @@ use Path
 (* use export array.NumOfEq
     (* numof s (nth p i) > 0 *) *)
 
-predicate distinct (p:path)
-= forall i j:int.
-    is_valid_index i p /\ is_valid_index j p /\ i < j ->
-    p.elements i <> p.elements j
+let function distinct (p:path) : bool
+  ensures { result <->
+    forall i j:int.
+      is_valid_index i p ->
+      is_valid_index j p ->
+      i < j ->
+      p.elements i <> p.elements j }
+= try
+    for i = 0 to p.size - 1 do
+    invariant { forall k l: int. 0 <= k < l < i -> p.elements k <> p.elements l }
+    for j = 0 to i - 1 do
+    invariant { forall k: int. 0 <= k < j -> p.elements k <> p.elements i }
+      if nth p i = nth p j then raise Exit
+    done
+    done;
+    True
+  with Exit -> False
+  end
 
 (* QUESTION 4 *)
 
 let function nth = Path.nth
 
 (* les indices du path [p] sont bien des indices de [s] *)
-predicate wf_path (p:path) (s:pt_set)
-= distinct p /\
-  forall i: int.
-  is_valid_index i p ->
-  is_index (nth p i) s
+let function wf_path (p:path) (s:pt_set)
+  ensures { result <->
+    distinct p /\
+    forall i: int. is_valid_index i p -> is_index (nth p i) s }
+= if not distinct p then False else
+  try
+    for i = 0 to p.size - 1 do
+      invariant { forall j: int. 0 <= j < i -> is_index (nth p j) s }
+      let a = nth p i in
+      if a < 0 || a >= s.length then raise Exit
+    done;
+    True
+  with Exit -> False
+  end
+
+
 
 let function plus1mod (i len: int): int
 = if i + 1 = len then 0 else i+1
 
 predicate is_convex_hull (s:pt_set) (p:path) =
-  wf_path p s ->
+  wf_path p s /\
   s.length >= __MIN_PTS_NUM__ -> (* si moins de 2 alors pas de segment dont on doit être à gauche *)
   forall i: int. is_valid_index i p ->
     let j = plus1mod i p.size in
@@ -280,11 +305,13 @@ predicate is_convex_hull (s:pt_set) (p:path) =
 (* QUESTION 5 *)
 
 let check_is_convex_hull (s:pt_set) (p:path) : bool
-  requires { s.length >= __MIN_PTS_NUM__ }
-  requires { p.size >= __MIN_PTS_NUM__ }
-  requires { wf_path p s }
+  requires { s.length >= __MIN_PTS_NUM__ }             (* condition de taille sur [s] *)
+  requires { p.size >= __MIN_PTS_NUM__ }               (* condition de taille sur [s] *)
+  (* requires { wf_path p s }                             (* *) *)
   ensures { result = True <-> is_convex_hull s p }
 =
+  if not wf_path p s then False
+  else
   try
     for i = 0 to p.size - 1 do
         invariant { forall j: int. 0 <= j < i -> all_on_left s (nth p j) (nth p (plus1mod j p.size)) }
