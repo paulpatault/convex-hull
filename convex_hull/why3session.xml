@@ -3,6 +3,7 @@
 "http://why3.lri.fr/why3session.dtd">
 <why3session shape_version="6">
 <prover id="0" name="CVC4" version="1.8" timelimit="5" steplimit="0" memlimit="1000"/>
+<prover id="1" name="Coq" version="8.16.1" timelimit="0" steplimit="0" memlimit="0"/>
 <prover id="2" name="Alt-Ergo" version="2.4.2" timelimit="5" steplimit="0" memlimit="1000"/>
 <prover id="3" name="Z3" version="4.11.0" timelimit="5" steplimit="0" memlimit="1000"/>
 <prover id="4" name="Alt-Ergo" version="2.4.1" timelimit="1" steplimit="0" memlimit="1000"/>
@@ -121,98 +122,108 @@
  <proof prover="4"><result status="valid" time="0.00" steps="15"/></proof>
  </goal>
  <goal name="check_all_on_left&#39;vc" expl="VC for check_all_on_left" proved="true">
- <proof prover="0" timelimit="1"><result status="valid" time="0.27" steps="30781"/></proof>
+ <proof prover="0" timelimit="1"><result status="valid" time="0.27" steps="29964"/></proof>
  <proof prover="3" timelimit="1"><result status="timeout" time="1.00"/></proof>
  <proof prover="4"><result status="timeout" time="1.00"/></proof>
  </goal>
 </theory>
 <theory name="ConvexHull">
+ <goal name="order_doesnt_count&#39;vc" expl="VC for order_doesnt_count">
+ </goal>
+ <goal name="check_is_convex_hull_aux&#39;vc" expl="VC for check_is_convex_hull_aux">
+ </goal>
  <goal name="check_is_convex_hull&#39;vc" expl="VC for check_is_convex_hull">
  <transf name="split_vc" >
   <goal name="check_is_convex_hull&#39;vc.0" expl="precondition" proved="true">
-  <proof prover="4" timelimit="5"><result status="valid" time="0.00" steps="8"/></proof>
+  <proof prover="4"><result status="valid" time="0.00" steps="6"/></proof>
   </goal>
   <goal name="check_is_convex_hull&#39;vc.1" expl="precondition" proved="true">
-  <proof prover="4" timelimit="5"><result status="valid" time="0.00" steps="10"/></proof>
+  <proof prover="4"><result status="valid" time="0.01" steps="16"/></proof>
   </goal>
-  <goal name="check_is_convex_hull&#39;vc.2" expl="loop invariant init" proved="true">
-  <proof prover="4" timelimit="5"><result status="valid" time="0.00" steps="13"/></proof>
+  <goal name="check_is_convex_hull&#39;vc.2" expl="precondition">
+  <proof prover="0" timelimit="10" memlimit="4000"><result status="timeout" time="10.00" steps="572829"/></proof>
+  <proof prover="3" timelimit="10" memlimit="4000"><result status="timeout" time="10.00"/></proof>
+  <proof prover="4" timelimit="10" memlimit="4000"><result status="timeout" time="10.00"/></proof>
   </goal>
-  <goal name="check_is_convex_hull&#39;vc.3" expl="loop invariant init" proved="true">
-  <proof prover="4" timelimit="5"><result status="valid" time="0.00" steps="13"/></proof>
+  <goal name="check_is_convex_hull&#39;vc.3" expl="precondition">
+  <proof prover="0" timelimit="10" memlimit="4000"><result status="timeout" time="10.00" steps="642372"/></proof>
+  <proof prover="3" timelimit="10" memlimit="4000"><result status="timeout" time="10.00"/></proof>
+  <proof prover="4" timelimit="10" memlimit="4000"><result status="timeout" time="10.00"/></proof>
   </goal>
-  <goal name="check_is_convex_hull&#39;vc.4" expl="loop invariant init" proved="true">
-  <proof prover="4" timelimit="5"><result status="valid" time="0.00" steps="11"/></proof>
+  <goal name="check_is_convex_hull&#39;vc.4" expl="postcondition" proved="true">
+  <proof prover="0" timelimit="1"><result status="valid" time="0.42" steps="48764"/></proof>
+  <proof prover="3" timelimit="1"><result status="timeout" time="1.00"/></proof>
+  <proof prover="4"><result status="timeout" time="1.00"/></proof>
   </goal>
-  <goal name="check_is_convex_hull&#39;vc.5" expl="loop invariant init" proved="true">
-  <proof prover="4" timelimit="5"><result status="valid" time="0.00" steps="115"/></proof>
+  <goal name="check_is_convex_hull&#39;vc.5" expl="postcondition">
+  <proof prover="0" timelimit="1"><result status="timeout" time="1.00" steps="137062"/></proof>
+  <proof prover="1" obsolete="true"><path name="convex_hull_ConvexHull_check_is_convex_hullqtvc_2.v"/><result status="failure" time="0.00"/></proof>
+  <proof prover="3" timelimit="1"><result status="timeout" time="1.00"/></proof>
+  <proof prover="4"><result status="timeout" time="1.00"/></proof>
   </goal>
-  <goal name="check_is_convex_hull&#39;vc.6" expl="precondition" proved="true">
-  <proof prover="4" timelimit="5"><result status="valid" time="0.00" steps="19"/></proof>
+  <goal name="check_is_convex_hull&#39;vc.6" expl="VC for check_is_convex_hull">
+  <proof prover="4" timelimit="5" obsolete="true"><result status="valid" time="0.00" steps="23"/></proof>
   </goal>
-  <goal name="check_is_convex_hull&#39;vc.7" expl="precondition" proved="true">
-  <proof prover="4" timelimit="5"><result status="valid" time="0.01" steps="24"/></proof>
+  <goal name="check_is_convex_hull&#39;vc.2" expl="precondition">
+  <proof prover="4" timelimit="5" obsolete="true"><result status="valid" time="0.00" steps="10"/></proof>
   </goal>
-  <goal name="check_is_convex_hull&#39;vc.8" expl="precondition" proved="true">
-  <proof prover="4" timelimit="5"><result status="valid" time="0.01" steps="79"/></proof>
+  <goal name="check_is_convex_hull&#39;vc.7" expl="precondition">
+  <proof prover="4" timelimit="5" obsolete="true"><result status="valid" time="0.00" steps="19"/></proof>
   </goal>
-  <goal name="check_is_convex_hull&#39;vc.9" expl="precondition" proved="true">
-  <proof prover="4" timelimit="5"><result status="valid" time="0.01" steps="83"/></proof>
+  <goal name="check_is_convex_hull&#39;vc.8" expl="precondition">
+  <proof prover="4" timelimit="5" obsolete="true"><result status="valid" time="0.01" steps="24"/></proof>
   </goal>
-  <goal name="check_is_convex_hull&#39;vc.10" expl="assertion" proved="true">
-  <proof prover="4" timelimit="5"><result status="valid" time="0.00" steps="23"/></proof>
+  <goal name="check_is_convex_hull&#39;vc.19" expl="out of loop bounds">
+  <proof prover="4" timelimit="5" obsolete="true"><result status="valid" time="0.00" steps="10"/></proof>
   </goal>
-  <goal name="check_is_convex_hull&#39;vc.11" expl="loop invariant preservation" proved="true">
-  <proof prover="4" timelimit="5"><result status="valid" time="0.01" steps="37"/></proof>
+  <goal name="check_is_convex_hull&#39;vc.13" expl="loop invariant preservation">
+  <proof prover="4" timelimit="5" obsolete="true"><result status="valid" time="0.01" steps="64"/></proof>
   </goal>
-  <goal name="check_is_convex_hull&#39;vc.12" expl="loop invariant preservation" proved="true">
-  <proof prover="4" timelimit="5"><result status="valid" time="0.01" steps="64"/></proof>
+  <goal name="check_is_convex_hull&#39;vc.12" expl="loop invariant preservation">
+  <proof prover="4" timelimit="5" obsolete="true"><result status="valid" time="0.01" steps="37"/></proof>
   </goal>
-  <goal name="check_is_convex_hull&#39;vc.13" expl="loop invariant preservation" proved="true">
-  <proof prover="4" timelimit="5"><result status="valid" time="0.00" steps="24"/></proof>
+  <goal name="check_is_convex_hull&#39;vc.14" expl="loop invariant preservation">
+  <proof prover="4" timelimit="5" obsolete="true"><result status="valid" time="0.00" steps="24"/></proof>
   </goal>
-  <goal name="check_is_convex_hull&#39;vc.14" expl="loop invariant preservation" proved="true">
-  <proof prover="4" timelimit="5"><result status="valid" time="0.00" steps="24"/></proof>
+  <goal name="check_is_convex_hull&#39;vc.15" expl="loop invariant preservation">
+  <proof prover="4" timelimit="5" obsolete="true"><result status="valid" time="0.00" steps="24"/></proof>
   </goal>
-  <goal name="check_is_convex_hull&#39;vc.15" expl="postcondition" proved="true">
-  <proof prover="4" timelimit="5"><result status="valid" time="0.00" steps="238"/></proof>
+  <goal name="check_is_convex_hull&#39;vc.4" expl="loop invariant init">
+  <proof prover="4" timelimit="5" obsolete="true"><result status="valid" time="0.00" steps="13"/></proof>
   </goal>
-  <goal name="check_is_convex_hull&#39;vc.16" expl="assertion" proved="true">
-  <proof prover="4" timelimit="5"><result status="valid" time="0.01" steps="17"/></proof>
+  <goal name="check_is_convex_hull&#39;vc.3" expl="loop invariant init">
+  <proof prover="4" timelimit="5" obsolete="true"><result status="valid" time="0.00" steps="13"/></proof>
   </goal>
-  <goal name="check_is_convex_hull&#39;vc.17" expl="postcondition">
-  <transf name="split_vc" >
-   <goal name="check_is_convex_hull&#39;vc.17.0" expl="postcondition">
-   <proof prover="0"><result status="timeout" time="5.00" steps="453692"/></proof>
-   <proof prover="3"><result status="timeout" time="5.00"/></proof>
-   <proof prover="4" timelimit="5"><result status="timeout" time="5.00"/></proof>
-   </goal>
-  </transf>
+  <goal name="check_is_convex_hull&#39;vc.5" expl="loop invariant init">
+  <proof prover="4" timelimit="5" obsolete="true"><result status="valid" time="0.00" steps="11"/></proof>
   </goal>
-  <goal name="check_is_convex_hull&#39;vc.18" expl="out of loop bounds" proved="true">
-  <proof prover="4" timelimit="5"><result status="valid" time="0.00" steps="10"/></proof>
+  <goal name="check_is_convex_hull&#39;vc.6" expl="loop invariant init">
+  <proof prover="4" timelimit="5" obsolete="true"><result status="valid" time="0.00" steps="115"/></proof>
+  </goal>
+  <goal name="check_is_convex_hull&#39;vc.17" expl="assertion">
+  <proof prover="4" timelimit="5" obsolete="true"><result status="valid" time="0.01" steps="17"/></proof>
   </goal>
  </transf>
  </goal>
  <goal name="largest&#39;vc" expl="VC for largest">
- <proof prover="0"><result status="unknown" time="0.09" steps="21117"/></proof>
- <proof prover="3"><result status="unknown" time="0.53" steps="256807"/></proof>
- <proof prover="4" timelimit="5"><result status="unknown" time="0.01"/></proof>
+ <proof prover="0" obsolete="true"><result status="unknown" time="0.09" steps="21117"/></proof>
+ <proof prover="3" obsolete="true"><result status="unknown" time="0.53" steps="256807"/></proof>
+ <proof prover="4" timelimit="5" obsolete="true"><result status="unknown" time="0.01"/></proof>
  </goal>
  <goal name="jarvis_no_termination&#39;vc" expl="VC for jarvis_no_termination">
- <proof prover="0"><result status="unknown" time="0.08" steps="21207"/></proof>
- <proof prover="3"><result status="unknown" time="0.19" steps="193654"/></proof>
- <proof prover="4" timelimit="5"><result status="unknown" time="0.01"/></proof>
+ <proof prover="0" obsolete="true"><result status="unknown" time="0.08" steps="21207"/></proof>
+ <proof prover="3" obsolete="true"><result status="unknown" time="0.19" steps="193654"/></proof>
+ <proof prover="4" timelimit="5" obsolete="true"><result status="unknown" time="0.01"/></proof>
  </goal>
  <goal name="inverse&#39;vc" expl="VC for inverse">
- <proof prover="0"><result status="unknown" time="0.09" steps="20420"/></proof>
- <proof prover="3"><result status="unknown" time="0.57" steps="365394"/></proof>
- <proof prover="4" timelimit="5"><result status="timeout" time="5.00"/></proof>
+ <proof prover="0" obsolete="true"><result status="unknown" time="0.09" steps="20420"/></proof>
+ <proof prover="3" obsolete="true"><result status="unknown" time="0.57" steps="365394"/></proof>
+ <proof prover="4" timelimit="5" obsolete="true"><result status="timeout" time="5.00"/></proof>
  </goal>
  <goal name="jarvis&#39;vc" expl="VC for jarvis">
- <proof prover="0"><result status="unknown" time="0.08" steps="21529"/></proof>
- <proof prover="3"><result status="unknown" time="2.43" steps="239357"/></proof>
- <proof prover="4" timelimit="5"><result status="unknown" time="0.01"/></proof>
+ <proof prover="0" obsolete="true"><result status="unknown" time="0.08" steps="21529"/></proof>
+ <proof prover="3" obsolete="true"><result status="unknown" time="2.43" steps="239357"/></proof>
+ <proof prover="4" timelimit="5" obsolete="true"><result status="unknown" time="0.01"/></proof>
  </goal>
 </theory>
 </file>

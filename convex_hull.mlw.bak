@@ -19,7 +19,7 @@ let constant __CONDITION_TO_BE_COMPLETED__ : bool = False
 let constant __FUNCTION_TO_BE_COMPLETED__ : int -> int = fun _ -> 0
 let constant __CODE_TO_BE_COMPLETED__ : unit = ()
 
-let constant __MIN_PTS_NUM__ : int = 3 (* pour le r dans [check_is_convex_hull] *)
+let constant __MIN_PTS_NUM__ : int = 2
 
 end
 
@@ -162,8 +162,6 @@ predicate all_on_left (s:pt_set) (i j:int) =
 
 exception Exit
 
-let function sub = sub
-
 (* let lemma all_on_left_ccw (s: pt_set) (k i j: int) : unit
   requires { k <> i }
   requires { k <> j }
@@ -278,7 +276,7 @@ predicate is_convex_hull (s:pt_set) (p:path) =
 
 (* QUESTION 5 *)
 
-let check_is_convex_hull (s:pt_set) (p:path) : bool
+(* let check_is_convex_hull (s:pt_set) (p:path) : bool
   requires { s.length >= __MIN_PTS_NUM__ }
   requires { p.size >= __MIN_PTS_NUM__ }
   requires { wf_path p s }
@@ -288,17 +286,66 @@ let check_is_convex_hull (s:pt_set) (p:path) : bool
   try
     for i = 0 to p.size - 2 do
         invariant { forall j:int. 0 <= j < i -> all_on_left s (nth p j) (nth p (j+1)) }
-        (* invariant { not all_on_left s (nth p i) (nth p (i+1)) -> not is_convex_hull s p } *)
+        invariant { forall j:int. 0 <= j <= i -> is_valid_index j p }
         invariant { i > 0 -> (r <-> all_on_left s (nth p (i-1)) (nth p i)) }
         invariant { r = False -> not is_convex_hull s p }
-        (* invariant { forall j:int. 0 <= j < i -> all_on_left s (nth p j) (nth p (j+1)) } *)
         let a = nth p i in
         let b = nth p (i+1) in
-        (* ghost (r <- False); *)
-        (* ghost (r <- all_on_left s (nth p i) (nth p (i+1))); *)
         ghost (r <- False);
         check_all_on_left s a b;
         ghost (r <- True);
+        assert { r = True }
+    done;
+    assert { r = True };
+    True
+  with Exit -> False
+  end *)
+
+use array.ArrayPermut
+
+let lemma order_doesnt_count (s1 s2: pt_set) (p: path) : unit
+  requires { permut_all s1 s2 }
+  requires { is_convex_hull s1 p }
+  ensures  { is_convex_hull s2 p }
+= ()
+
+(* copie de [s], où tous les points du [path] sont mis à gauche dans [result] *)
+val function arrange_set (s: pt_set) (p: path) : pt_set
+  requires { wf_path p s }
+  ensures  { permut_all s result }
+  ensures  { forall i: int. 0 <= i < p.size -> result[i] = s[nth p i] }
+
+let check_is_convex_hull_aux (s:pt_set) (p:path)
+  requires { s = arrange_set s p }
+  ensures  { __FORMULA_TO_BE_COMPLETED__ } (* AUX TODO *)
+=
+  try
+    for i = 0 to p.size - 2 do
+        invariant { forall j:int. 0 <= j < i -> all_on_left s (nth p j) (nth p (j+1)) }
+        invariant { forall j:int. 0 <= j <= i -> is_valid_index j p }
+        invariant { i > 0 -> (r <-> all_on_left s (nth p (i-1)) (nth p i)) }
+        invariant { r = False -> not is_convex_hull s p }
+        let a = nth p i in
+        let b = nth p (i+1) in
+        check_all_on_left s a b;
+
+    done;
+    assert { r = True };
+    True
+  with Exit -> False
+  end
+let check_is_convex_hull (s:pt_set) (p:path) : bool
+  requires { s.length >= __MIN_PTS_NUM__ }
+  requires { p.size >= __MIN_PTS_NUM__ }
+  requires { wf_path p s }
+  ensures { result = True <-> is_convex_hull s p }
+=
+  let cps = arrange_set s p in
+  try
+    for i = 1 to s.length - p.size do
+        let a = nth p i in
+        let b = nth p (i+1) in
+        is_convex_hull (sub s 0 (p.size + i)) a b;
         assert { r = True }
     done;
     assert { r = True };
