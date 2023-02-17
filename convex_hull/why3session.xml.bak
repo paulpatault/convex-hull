@@ -134,53 +134,32 @@
  </goal>
  <goal name="check_is_convex_hull&#39;vc" expl="VC for check_is_convex_hull">
  <transf name="split_vc" >
-  <goal name="check_is_convex_hull&#39;vc.0" expl="precondition">
+  <goal name="check_is_convex_hull&#39;vc.0" expl="precondition" proved="true">
+  <proof prover="4"><result status="valid" time="0.00" steps="6"/></proof>
   </goal>
-  <goal name="check_is_convex_hull&#39;vc.1" expl="precondition">
-  <proof prover="4" timelimit="5" obsolete="true"><result status="valid" time="0.01" steps="83"/></proof>
+  <goal name="check_is_convex_hull&#39;vc.1" expl="precondition" proved="true">
+  <proof prover="4"><result status="valid" time="0.01" steps="16"/></proof>
   </goal>
   <goal name="check_is_convex_hull&#39;vc.2" expl="precondition">
-  <proof prover="4" timelimit="5" obsolete="true"><result status="valid" time="0.01" steps="79"/></proof>
+  <proof prover="0" timelimit="10" memlimit="4000"><result status="timeout" time="10.00" steps="572829"/></proof>
+  <proof prover="3" timelimit="10" memlimit="4000"><result status="timeout" time="10.00"/></proof>
+  <proof prover="4" timelimit="10" memlimit="4000"><result status="timeout" time="10.00"/></proof>
   </goal>
   <goal name="check_is_convex_hull&#39;vc.3" expl="precondition">
-  <proof prover="4" timelimit="5" obsolete="true"><result status="valid" time="0.00" steps="8"/></proof>
+  <proof prover="0" timelimit="10" memlimit="4000"><result status="timeout" time="10.00" steps="642372"/></proof>
+  <proof prover="3" timelimit="10" memlimit="4000"><result status="timeout" time="10.00"/></proof>
+  <proof prover="4" timelimit="10" memlimit="4000"><result status="timeout" time="10.00"/></proof>
   </goal>
-  <goal name="check_is_convex_hull&#39;vc.4" expl="postcondition">
-  <proof prover="4" timelimit="5" obsolete="true"><result status="valid" time="0.00" steps="238"/></proof>
+  <goal name="check_is_convex_hull&#39;vc.4" expl="postcondition" proved="true">
+  <proof prover="0" timelimit="1"><result status="valid" time="0.42" steps="48764"/></proof>
+  <proof prover="3" timelimit="1"><result status="timeout" time="1.00"/></proof>
+  <proof prover="4"><result status="timeout" time="1.00"/></proof>
   </goal>
   <goal name="check_is_convex_hull&#39;vc.5" expl="postcondition">
+  <proof prover="0" timelimit="1"><result status="timeout" time="1.00" steps="137062"/></proof>
   <proof prover="1" obsolete="true"><path name="convex_hull_ConvexHull_check_is_convex_hullqtvc_2.v"/><result status="failure" time="0.00"/></proof>
-  <transf name="split_vc" >
-   <goal name="check_is_convex_hull&#39;vc.5.0" expl="postcondition">
-   <proof prover="3" memlimit="2000" obsolete="true"><result status="timeout" time="5.00"/></proof>
-   <proof prover="4" timelimit="5" memlimit="2000" obsolete="true"><result status="timeout" time="5.00"/></proof>
-   <transf name="inline_goal" >
-    <goal name="check_is_convex_hull&#39;vc.5.0.0" expl="postcondition">
-    <transf name="split_all_full" >
-     <goal name="check_is_convex_hull&#39;vc.5.0.0.0" expl="postcondition">
-     <proof prover="0" timelimit="1" obsolete="true"><result status="timeout" time="1.00" steps="111111"/></proof>
-     <proof prover="3" timelimit="1" obsolete="true"><result status="timeout" time="1.00"/></proof>
-     <proof prover="4" obsolete="true"><result status="timeout" time="1.00"/></proof>
-     <transf name="split_vc" >
-      <goal name="check_is_convex_hull&#39;vc.5.0.0.0.0" expl="postcondition">
-      <proof prover="0" memlimit="2000" obsolete="true"><result status="timeout" time="5.00" steps="412990"/></proof>
-      <proof prover="3" memlimit="2000" obsolete="true"><result status="timeout" time="5.00"/></proof>
-      <proof prover="4" timelimit="5" memlimit="2000" obsolete="true"><result status="timeout" time="5.00"/></proof>
-      <transf name="inline_goal" >
-       <goal name="check_is_convex_hull&#39;vc.5.0.0.0.0.0" expl="postcondition">
-       <proof prover="0" timelimit="30" memlimit="4000" obsolete="true"><result status="timeout" time="30.00" steps="3227401"/></proof>
-       <proof prover="3" timelimit="30" memlimit="4000" obsolete="true"><result status="timeout" time="30.00"/></proof>
-       <proof prover="4" timelimit="30" memlimit="4000" obsolete="true"><result status="timeout" time="30.00"/></proof>
-       </goal>
-      </transf>
-      </goal>
-     </transf>
-     </goal>
-    </transf>
-    </goal>
-   </transf>
-   </goal>
-  </transf>
+  <proof prover="3" timelimit="1"><result status="timeout" time="1.00"/></proof>
+  <proof prover="4"><result status="timeout" time="1.00"/></proof>
   </goal>
   <goal name="check_is_convex_hull&#39;vc.6" expl="VC for check_is_convex_hull">
   <proof prover="4" timelimit="5" obsolete="true"><result status="valid" time="0.00" steps="23"/></proof>

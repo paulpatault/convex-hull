@@ -267,68 +267,17 @@ predicate wf_path (p:path) (s:pt_set)
   is_valid_index i p ->
   is_index (nth p i) s
 
+let function plus1mod (i len: int): int
+= if i + 1 = len then 0 else i+1
+
 predicate is_convex_hull (s:pt_set) (p:path) =
   wf_path p s ->
   s.length >= __MIN_PTS_NUM__ -> (* si moins de 2 alors pas de i+1, 3 pas nécessaires car i-i+1 = ? *)
   forall i: int. is_valid_index i p ->
-    let j = if i + 1 = p.size then 0 else i+1 in
+    let j = plus1mod i p.size in
     all_on_left s (nth p i) (nth p j)
 
 (* QUESTION 5 *)
-
-(* let check_is_convex_hull (s:pt_set) (p:path) : bool
-  requires { s.length >= __MIN_PTS_NUM__ }
-  requires { p.size >= __MIN_PTS_NUM__ }
-  requires { wf_path p s }
-  ensures { result = True <-> is_convex_hull s p }
-=
-  let ghost ref r = all_on_left s (nth p 0) (nth p 1) in
-  try
-    for i = 0 to p.size - 2 do
-        invariant { forall j:int. 0 <= j < i -> all_on_left s (nth p j) (nth p (j+1)) }
-        invariant { forall j:int. 0 <= j <= i -> is_valid_index j p }
-        invariant { i > 0 -> (r <-> all_on_left s (nth p (i-1)) (nth p i)) }
-        invariant { r = False -> not is_convex_hull s p }
-        let a = nth p i in
-        let b = nth p (i+1) in
-        ghost (r <- False);
-        check_all_on_left s a b;
-        ghost (r <- True);
-        assert { r = True }
-    done;
-    assert { r = True };
-    True
-  with Exit -> False
-  end *)
-
-use array.ArrayPermut
-
-let lemma order_doesnt_count (s1 s2: pt_set) (p: path) : unit
-  requires { permut_all s1 s2 }
-  requires { is_convex_hull s1 p }
-  ensures  { is_convex_hull s2 p }
-= ()
-
-(* copie de [s], où tous les points du [path] sont mis à gauche dans [result] *)
-val function arrange_set (s: pt_set) (p: path) : pt_set
-  requires { wf_path p s }
-  ensures  { permut_all s result }
-  ensures  { wf_path p result }
-  ensures  { forall i: int. 0 <= i < p.size -> result[i] = s[nth p i] }
-
-let check_is_convex_hull_aux (s:pt_set) (p:path) : unit
-  requires { s = arrange_set s p }
-  requires { wf_path p s }
-  ensures  { is_convex_hull s p }
-  raises   { Exit -> not is_convex_hull s p }
-=
-  for i = 0 to p.size - 2 do
-    (* invariant { forall j:int. 0 <= j < i -> all_on_left s (nth p j) (nth p (j+1)) } *)
-    (* invariant { forall j:int. 0 <= j <= i -> is_valid_index j p } *)
-    let a = nth p i in
-    let b = nth p (i+1) in
-    check_all_on_left s a b;
-  done
 
 let check_is_convex_hull (s:pt_set) (p:path) : bool
   requires { s.length >= __MIN_PTS_NUM__ }
@@ -336,15 +285,23 @@ let check_is_convex_hull (s:pt_set) (p:path) : bool
   requires { wf_path p s }
   ensures { result = True <-> is_convex_hull s p }
 =
-  let cps = arrange_set s p in
+  (* let ghost ref r = all_on_left s (nth p 0) (nth p 1) in *)
   try
-    for i = p.size to cps.length - 1 do
-      check_is_convex_hull_aux (sub cps 0 i) p;
+    for i = 0 to p.size - 1 do
+        invariant { forall j:int. 0 <= j < i -> all_on_left s (nth p j) (nth p (plus1mod j p.size)) }
+        invariant { forall j:int. 0 <= j <= i -> is_valid_index j p }
+        (* invariant { i > 0 -> (r <-> all_on_left s (nth p (i-1)) (nth p i)) } *)
+        (* invariant { r = False -> not is_convex_hull s p } *)
+        let j = plus1mod i p.size in
+        (* ghost (r <- False); *)
+        check_all_on_left s (nth p i) (nth p j);
+        (* ghost (r <- True); *)
+        (* assert { r = True } *)
     done;
+    (* assert { r = True }; *)
     True
   with Exit -> False
   end
-
 
 
 (** Properties assumed to characterize "general" set of points *)
