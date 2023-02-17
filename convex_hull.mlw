@@ -314,12 +314,12 @@ let check_is_convex_hull (s:pt_set) (p:path) : bool
   else
   try
     for i = 0 to p.size - 1 do
-        invariant { forall j: int. 0 <= j < i -> all_on_left s (nth p j) (nth p (plus1mod j p.size)) }
-        invariant { forall j: int. 0 <= j < i -> is_valid_index j p }
-        let j = plus1mod i p.size in
-        let a = nth p i in
-        let b = nth p j in
-        check_all_on_left s a b
+      invariant { forall j: int. 0 <= j < i -> all_on_left s (nth p j) (nth p (plus1mod j p.size)) }
+      invariant { forall j: int. 0 <= j < i -> is_valid_index j p }
+      let j = plus1mod i p.size in
+      let a = nth p i in
+      let b = nth p j in
+      check_all_on_left s a b
     done;
     True
   with Exit -> False
