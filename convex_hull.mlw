@@ -295,12 +295,22 @@ let function wf_path (p:path) (s:pt_set)
 let function plus1mod (i len: int): int
 = if i + 1 = len then 0 else i+1
 
-predicate is_convex_hull (s:pt_set) (p:path) =
-  wf_path p s /\
-  s.length >= __MIN_PTS_NUM__ -> (* si moins de 2 alors pas de segment dont on doit être à gauche *)
-  forall i: int. is_valid_index i p ->
+predicate is_convex_hull (s:pt_set) (p:path)
+= wf_path p s /\
+  (s.length >= __MIN_PTS_NUM__ -> (* si moins de 2 alors pas de segment dont on doit être à gauche *)
+   forall i: int. is_valid_index i p ->
     let j = plus1mod i p.size in
-    all_on_left s (nth p i) (nth p j)
+    all_on_left s (nth p i) (nth p j))
+
+let lemma xx2 (s: pt_set) (p: path) : unit
+  requires { is_convex_hull s p }
+  ensures  { wf_path p s }
+= ()
+
+let lemma xx (s: pt_set) (p: path) : unit
+  requires { not wf_path p s }
+  ensures  { not is_convex_hull s p }
+= ()
 
 (* QUESTION 5 *)
 
@@ -310,9 +320,9 @@ let check_is_convex_hull (s:pt_set) (p:path) : bool
   (* requires { wf_path p s }                             (* *) *)
   ensures { result = True <-> is_convex_hull s p }
 =
-  if not wf_path p s then False
-  else
+  if not wf_path p s then False else
   try
+    assert { wf_path p s };
     for i = 0 to p.size - 1 do
       invariant { forall j: int. 0 <= j < i -> all_on_left s (nth p j) (nth p (plus1mod j p.size)) }
       invariant { forall j: int. 0 <= j < i -> is_valid_index j p }
@@ -335,7 +345,6 @@ predicate no_colinear_triple (s:pt_set) =
 predicate unique_minimal_y (s:pt_set) (i:int) =
   is_index i s /\
     forall j:int. is_index j s /\ i <> j -> s[i].y <. s[j].y
-
 
 
 (** QUESTION 7 : the largest function (see QUESTION 6 later) *)
