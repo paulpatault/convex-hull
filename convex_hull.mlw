@@ -339,15 +339,18 @@ let largest (s:pt_set) (pivot:int) (ghost base:pt) : int
       s[k] <> base ->
       ccw base s[pivot] s[k] }
   ensures {
-    forall i: int.
-    is_index i s ->
-    i <> pivot ->
-    ccw s[pivot] s[result] s[i] }
+    forall k: int. is_index k s ->
+    k <> pivot ->
+    ccw s[pivot] s[result] s[k] }
   ensures { is_index result s }
 =
   let ref res = if pivot = 0 then 1 else 0 in
-  for i = res+1 to length s - 1 do
-    invariant { forall j: int. res+1 <= j < i -> j <> pivot -> ccw s[pivot] s[res] s[j] }
+  for i = res+1 to s.length - 1 do
+    invariant {
+      forall j: int. res+1 <= j < i ->
+      j <> pivot ->
+      ccw s[pivot] s[res] s[j]
+    }
     invariant { i > 0 -> is_index (i-1) s }
     invariant { is_index res s }
     if i <> pivot then
