@@ -162,33 +162,6 @@ predicate all_on_left (s:pt_set) (i j:int) =
 
 exception Exit
 
-(* let lemma all_on_left_ccw (s: pt_set) (k i j: int) : unit
-  requires { k <> i }
-  requires { k <> j }
-  requires { is_index k s }
-  requires { is_index i s }
-  requires { is_index j s }
-  requires { all_on_left s i j }
-  ensures  { ccw s[i] s[j] s[k] }
-= ()
-
-let lemma not_ccw_not_all_on_left (s: pt_set) (k i j: int) : unit
-  requires { k <> i }
-  requires { k <> j }
-  requires { is_index k s }
-  requires { is_index i s }
-  requires { is_index j s }
-  requires { not ccw s[i] s[j] s[k] }
-  ensures  { not all_on_left s i j }
-= ()
-
-let lemma lemma_1 (s: pt_set) (i j: int) : unit
-  requires { is_index i s }
-  requires { is_index j s }
-  ensures { not ccw s[i] s[j] s[j] }
-  ensures { not ccw s[i] s[i] s[j] }
-= () *)
-
 let check_all_on_left (s:pt_set) (i j:int) : unit
   requires { is_index i s }                          (* acces [s[i]] *)
   requires { is_index j s }                          (* idem [j] *)
@@ -251,108 +224,89 @@ use Path
 (* use export array.NumOfEq
     (* numof s (nth p i) > 0 *) *)
 
-predicate distinct (p:path)
-= forall i j:int.
-    is_valid_index i p /\ is_valid_index j p /\ i < j ->
-    p.elements i <> p.elements j
+let function distinct (p:path) : bool
+  ensures { result <->
+    forall i j:int.
+      is_valid_index i p ->
+      is_valid_index j p ->
+      i < j ->
+      p.elements i <> p.elements j }
+= try
+    for i = 0 to p.size - 1 do
+    invariant { forall k l: int. 0 <= k < l < i -> p.elements k <> p.elements l }
+    for j = 0 to i - 1 do
+    invariant { forall k: int. 0 <= k < j -> p.elements k <> p.elements i }
+      if nth p i = nth p j then raise Exit
+    done
+    done;
+    True
+  with Exit -> False
+  end
 
 (* QUESTION 4 *)
 
 let function nth = Path.nth
 
 (* les indices du path [p] sont bien des indices de [s] *)
-predicate wf_path (p:path) (s:pt_set)
-= distinct p /\
-  forall i: int.
-  is_valid_index i p ->
-  is_index (nth p i) s
+let function wf_path (p:path) (s:pt_set)
+  ensures { result <->
+    distinct p /\
+    forall i: int. is_valid_index i p -> is_index (nth p i) s }
+= if not distinct p then False else
+  try
+    for i = 0 to p.size - 1 do
+      invariant { forall j: int. 0 <= j < i -> is_index (nth p j) s }
+      let a = nth p i in
+      if a < 0 || a >= s.length then raise Exit
+    done;
+    True
+  with Exit -> False
+  end
 
-predicate is_convex_hull (s:pt_set) (p:path) =
-  wf_path p s ->
-  s.length >= __MIN_PTS_NUM__ -> (* si moins de 2 alors pas de i+1, 3 pas nécessaires car i-i+1 = ? *)
-  forall i: int. is_valid_index i p ->
-    let j = if i + 1 = p.size then 0 else i+1 in
-    all_on_left s (nth p i) (nth p j)
+
+
+let function plus1mod (i len: int): int
+= if i + 1 = len then 0 else i+1
+
+predicate is_convex_hull (s:pt_set) (p:path)
+= wf_path p s /\
+  (s.length >= __MIN_PTS_NUM__ -> (* si moins de 2 alors pas de segment dont on doit être à gauche *)
+   forall i: int. is_valid_index i p ->
+    let j = plus1mod i p.size in
+    all_on_left s (nth p i) (nth p j))
+
+let lemma xx2 (s: pt_set) (p: path) : unit
+  requires { is_convex_hull s p }
+  ensures  { wf_path p s }
+= ()
+
+let lemma xx (s: pt_set) (p: path) : unit
+  requires { not wf_path p s }
+  ensures  { not is_convex_hull s p }
+= ()
 
 (* QUESTION 5 *)
 
-(* let check_is_convex_hull (s:pt_set) (p:path) : bool
-  requires { s.length >= __MIN_PTS_NUM__ }
-  requires { p.size >= __MIN_PTS_NUM__ }
-  requires { wf_path p s }
-  ensures { result = True <-> is_convex_hull s p }
-=
-  let ghost ref r = all_on_left s (nth p 0) (nth p 1) in
-  try
-    for i = 0 to p.size - 2 do
-        invariant { forall j:int. 0 <= j < i -> all_on_left s (nth p j) (nth p (j+1)) }
-        invariant { forall j:int. 0 <= j <= i -> is_valid_index j p }
-        invariant { i > 0 -> (r <-> all_on_left s (nth p (i-1)) (nth p i)) }
-        invariant { r = False -> not is_convex_hull s p }
-        let a = nth p i in
-        let b = nth p (i+1) in
-        ghost (r <- False);
-        check_all_on_left s a b;
-        ghost (r <- True);
-        assert { r = True }
-    done;
-    assert { r = True };
-    True
-  with Exit -> False
-  end *)
-
-use array.ArrayPermut
-
-let lemma order_doesnt_count (s1 s2: pt_set) (p: path) : unit
-  requires { permut_all s1 s2 }
-  requires { is_convex_hull s1 p }
-  ensures  { is_convex_hull s2 p }
-= ()
-
-(* copie de [s], où tous les points du [path] sont mis à gauche dans [result] *)
-val function arrange_set (s: pt_set) (p: path) : pt_set
-  requires { wf_path p s }
-  ensures  { permut_all s result }
-  ensures  { forall i: int. 0 <= i < p.size -> result[i] = s[nth p i] }
-
-let check_is_convex_hull_aux (s:pt_set) (p:path)
-  requires { s = arrange_set s p }
-  ensures  { __FORMULA_TO_BE_COMPLETED__ } (* AUX TODO *)
-=
-  try
-    for i = 0 to p.size - 2 do
-        invariant { forall j:int. 0 <= j < i -> all_on_left s (nth p j) (nth p (j+1)) }
-        invariant { forall j:int. 0 <= j <= i -> is_valid_index j p }
-        invariant { i > 0 -> (r <-> all_on_left s (nth p (i-1)) (nth p i)) }
-        invariant { r = False -> not is_convex_hull s p }
-        let a = nth p i in
-        let b = nth p (i+1) in
-        check_all_on_left s a b;
-
-    done;
-    assert { r = True };
-    True
-  with Exit -> False
-  end
 let check_is_convex_hull (s:pt_set) (p:path) : bool
-  requires { s.length >= __MIN_PTS_NUM__ }
-  requires { p.size >= __MIN_PTS_NUM__ }
-  requires { wf_path p s }
+  requires { s.length >= __MIN_PTS_NUM__ }             (* condition de taille sur [s] *)
+  requires { p.size >= __MIN_PTS_NUM__ }               (* condition de taille sur [s] *)
+  (* requires { wf_path p s }                             (* *) *)
   ensures { result = True <-> is_convex_hull s p }
 =
-  let cps = arrange_set s p in
+  if not wf_path p s then False else
   try
-    for i = 1 to s.length - p.size do
-        let a = nth p i in
-        let b = nth p (i+1) in
-        is_convex_hull (sub s 0 (p.size + i)) a b;
-        assert { r = True }
+    assert { wf_path p s };
+    for i = 0 to p.size - 1 do
+      invariant { forall j: int. 0 <= j < i -> all_on_left s (nth p j) (nth p (plus1mod j p.size)) }
+      invariant { forall j: int. 0 <= j < i -> is_valid_index j p }
+      let j = plus1mod i p.size in
+      let a = nth p i in
+      let b = nth p j in
+      check_all_on_left s a b
     done;
-    assert { r = True };
     True
   with Exit -> False
   end
-
 
 
 (** Properties assumed to characterize "general" set of points *)
@@ -366,7 +320,6 @@ predicate unique_minimal_y (s:pt_set) (i:int) =
     forall j:int. is_index j s /\ i <> j -> s[i].y <. s[j].y
 
 
-
 (** QUESTION 7 : the largest function (see QUESTION 6 later) *)
 
 
@@ -377,12 +330,25 @@ predicate unique_minimal_y (s:pt_set) (i:int) =
    All points are assumed to be on the left of the segment (base,pivot) *)
 
 let largest (s:pt_set) (pivot:int) (ghost base:pt) : int
-  requires { __FORMULA_TO_BE_COMPLETED__  }
-  ensures { __FORMULA_TO_BE_COMPLETED__    }
+  requires { no_colinear_triple s }
+  requires { unique_minimal_y s pivot }
+  requires { length s >= __MIN_PTS_NUM__ }
+  requires {
+    forall k : int. is_index k s ->
+      k <> pivot ->
+      s[k] <> base ->
+      ccw base s[pivot] s[k] }
+  ensures {
+    forall i: int.
+    is_index i s ->
+    i <> pivot ->
+    ccw s[pivot] s[result] s[i] }
 =
   let ref res = if pivot = 0 then 1 else 0 in
   for i = res+1 to length s - 1 do
-    invariant { __FORMULA_TO_BE_COMPLETED__ }
+    invariant { forall j: int. res+1 <= j < i -> j <> pivot -> ccw s[pivot] s[res] s[j] }
+    invariant { i > 0 -> is_index (i-1) s }
+    invariant { is_index res s }
     if i <> pivot then
       if ccw s[pivot] s[i] s[res] then
            res <- i;
@@ -396,7 +362,8 @@ function translate_left (p:pt) : pt =
   { x = p.x -. 1.0 ; y = p.y }
 
 let jarvis_no_termination (s:pt_set) : path
-  requires { __FORMULA_TO_BE_COMPLETED__ }
+  requires { no_colinear_riple s }
+  requires { exists i: int. unique_minimal_y s i }
   diverges
   ensures { is_convex_hull s result }
 =
@@ -410,7 +377,7 @@ let jarvis_no_termination (s:pt_set) : path
   let ref pivot = next in
   try
     while True do
-      invariant { __FORMULA_TO_BE_COMPLETED__      }
+      invariant { next <> hd -> is_index oldpivot s }
       let next = largest s pivot s[oldpivot] in
       if next = hd then raise Exit;
       oldpivot <- pivot;
@@ -421,8 +388,6 @@ let jarvis_no_termination (s:pt_set) : path
   with Exit ->
     p
   end
-
-
 
 
 (** QUESTION 8: termination *)

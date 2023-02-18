@@ -162,33 +162,6 @@ predicate all_on_left (s:pt_set) (i j:int) =
 
 exception Exit
 
-(* let lemma all_on_left_ccw (s: pt_set) (k i j: int) : unit
-  requires { k <> i }
-  requires { k <> j }
-  requires { is_index k s }
-  requires { is_index i s }
-  requires { is_index j s }
-  requires { all_on_left s i j }
-  ensures  { ccw s[i] s[j] s[k] }
-= ()
-
-let lemma not_ccw_not_all_on_left (s: pt_set) (k i j: int) : unit
-  requires { k <> i }
-  requires { k <> j }
-  requires { is_index k s }
-  requires { is_index i s }
-  requires { is_index j s }
-  requires { not ccw s[i] s[j] s[k] }
-  ensures  { not all_on_left s i j }
-= ()
-
-let lemma lemma_1 (s: pt_set) (i j: int) : unit
-  requires { is_index i s }
-  requires { is_index j s }
-  ensures { not ccw s[i] s[j] s[j] }
-  ensures { not ccw s[i] s[i] s[j] }
-= () *)
-
 let check_all_on_left (s:pt_set) (i j:int) : unit
   requires { is_index i s }                          (* acces [s[i]] *)
   requires { is_index j s }                          (* idem [j] *)
@@ -302,7 +275,7 @@ predicate is_convex_hull (s:pt_set) (p:path)
     let j = plus1mod i p.size in
     all_on_left s (nth p i) (nth p j))
 
-let lemma xx2 (s: pt_set) (p: path) : unit
+(* let lemma xx2 (s: pt_set) (p: path) : unit
   requires { is_convex_hull s p }
   ensures  { wf_path p s }
 = ()
@@ -310,7 +283,7 @@ let lemma xx2 (s: pt_set) (p: path) : unit
 let lemma xx (s: pt_set) (p: path) : unit
   requires { not wf_path p s }
   ensures  { not is_convex_hull s p }
-= ()
+= () *)
 
 (* QUESTION 5 *)
 
@@ -357,12 +330,26 @@ predicate unique_minimal_y (s:pt_set) (i:int) =
    All points are assumed to be on the left of the segment (base,pivot) *)
 
 let largest (s:pt_set) (pivot:int) (ghost base:pt) : int
-  requires { __FORMULA_TO_BE_COMPLETED__  }
-  ensures { __FORMULA_TO_BE_COMPLETED__    }
+  requires { no_colinear_triple s }
+  requires { length s >= __MIN_PTS_NUM__ }
+  requires { is_index pivot s }
+  requires {
+    forall k : int. is_index k s ->
+      k <> pivot ->
+      s[k] <> base ->
+      ccw base s[pivot] s[k] }
+  ensures {
+    forall i: int.
+    is_index i s ->
+    i <> pivot ->
+    ccw s[pivot] s[result] s[i] }
+  ensures { is_index result s }
 =
   let ref res = if pivot = 0 then 1 else 0 in
   for i = res+1 to length s - 1 do
-    invariant { __FORMULA_TO_BE_COMPLETED__ }
+    invariant { forall j: int. res+1 <= j < i -> j <> pivot -> ccw s[pivot] s[res] s[j] }
+    invariant { i > 0 -> is_index (i-1) s }
+    invariant { is_index res s }
     if i <> pivot then
       if ccw s[pivot] s[i] s[res] then
            res <- i;
@@ -376,7 +363,9 @@ function translate_left (p:pt) : pt =
   { x = p.x -. 1.0 ; y = p.y }
 
 let jarvis_no_termination (s:pt_set) : path
-  requires { __FORMULA_TO_BE_COMPLETED__ }
+  requires { no_colinear_triple s }
+  requires { exists i: int. unique_minimal_y s i }
+  requires { length s >= __MIN_PTS_NUM__ }
   diverges
   ensures { is_convex_hull s result }
 =
@@ -390,19 +379,18 @@ let jarvis_no_termination (s:pt_set) : path
   let ref pivot = next in
   try
     while True do
-      invariant { __FORMULA_TO_BE_COMPLETED__      }
+      invariant { next <> hd -> is_index oldpivot s }
+      invariant { is_index pivot s }
+      invariant { wf_path p s }
       let next = largest s pivot s[oldpivot] in
       if next = hd then raise Exit;
       oldpivot <- pivot;
       pivot <- next;
       append p next;
-      done;
+    done;
     absurd
-  with Exit ->
-    p
+  with Exit -> p
   end
-
-
 
 
 (** QUESTION 8: termination *)
