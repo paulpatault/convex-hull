@@ -348,9 +348,6 @@
   <goal name="largest&#39;vc.15" expl="postcondition">
   <transf name="split_vc" >
    <goal name="largest&#39;vc.15.0" expl="postcondition">
-   <proof prover="0"><result status="timeout" time="5.00" steps="953221"/></proof>
-   <proof prover="3"><result status="timeout" time="5.00"/></proof>
-   <proof prover="4" timelimit="5"><result status="timeout" time="5.00"/></proof>
    </goal>
    <goal name="largest&#39;vc.15.1" expl="postcondition">
    <proof prover="0"><result status="timeout" time="5.00" steps="730853"/></proof>
