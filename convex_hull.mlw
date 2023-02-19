@@ -59,8 +59,8 @@ predicate is_lower_pt (p1 p2:pt) =
 (** QUESTION 1: compute the lowest-leftmost pt *)
 
 let lowest_leftmost (s:pt_set) : int
-  requires { s.length > 0 }                                          (* car on accède à s[0] *)
-  ensures { is_index result s }                                      (* le résultat doit faire parti des choix possibles*)
+  requires { s.length > 0 }                             (* car on accède à s[0] *)
+  ensures { is_index result s }                         (* le résultat doit faire parti des choix possibles*)
   ensures { forall i:int. is_index i s -> is_lower_pt s[result] s[i] } (* il s'agit bien du plus petit *)
 =
   let ref r = 0 in
@@ -177,9 +177,6 @@ let check_all_on_left (s:pt_set) (i j:int) : unit
 
 end
 
-
-
-
 (** {2 Module for Paths} *)
 
 
@@ -207,12 +204,14 @@ module Path
     writes  { p }
     ensures { p.size = (old p.size) + 1 }
     ensures { p.elements (old p.size) = v }
+    ensures { p.elements (p.size - 1) = v }
     ensures { forall i. 0 <= i < (old p.size) -> p.elements i = (old p.elements) i }
 
+  (* val last (p:path) : int
+    requires { is_valid_index (p.size - 1) p }
+    ensures { result = p.elements (p.size - 1) } *)
+
 end
-
-
-
 
 
 module ConvexHull
@@ -220,6 +219,9 @@ module ConvexHull
 use Point
 use CCW
 use Path
+
+let function nth = Path.nth
+(* let function last = Path.last *)
 
 (* use export array.NumOfEq
     (* numof s (nth p i) > 0 *) *)
@@ -245,9 +247,8 @@ let function distinct (p:path) : bool
 
 (* QUESTION 4 *)
 
-let function nth = Path.nth
-
-(* les indices du path [p] sont bien des indices de [s] *)
+(* - les indices du path [p] sont bien des indices de [s]
+   - les éléments de [p] sont bien différents deux à deux *)
 let function wf_path (p:path) (s:pt_set)
   ensures { result <->
     distinct p /\
@@ -337,19 +338,20 @@ let largest (s:pt_set) (pivot:int) (ghost base:pt) : int
     forall k : int. is_index k s ->
       k <> pivot ->
       s[k] <> base ->
-      ccw base s[pivot] s[k] }
+      ccw base s[pivot] s[k] } (* all on left base-pivot *)
   ensures {
     forall k: int. is_index k s ->
-    k <> pivot ->
+    diff2 k pivot result ->
     ccw s[pivot] s[result] s[k] }
   ensures { is_index result s }
 =
   let ref res = if pivot = 0 then 1 else 0 in
+  let ghost res_init = if pivot = 0 then 1 else 0 in
   for i = res+1 to s.length - 1 do
     invariant {
-      forall j: int. res+1 <= j < i ->
+      forall j: int. res_init+1 <= j < i - 1 ->
       j <> pivot ->
-      ccw s[pivot] s[res] s[j]
+      ccw s[pivot] s[res_init] s[j]
     }
     invariant { i > 0 -> is_index (i-1) s }
     invariant { is_index res s }
@@ -375,21 +377,33 @@ let jarvis_no_termination (s:pt_set) : path
   let hd = lowest_leftmost s in
   let p = create () in
   append p hd;
-  let ghost ref base = translate_left s[hd] in
+  let ghost base = translate_left s[hd] in
   let next = largest s hd base in
   append p next;
   let ref oldpivot = hd in
   let ref pivot = next in
+  assert { nth p (p.size - 1) = pivot = next };
+  assert { nth p (p.size - 2) = oldpivot = hd };
   try
     while True do
-      invariant { next <> hd -> is_index oldpivot s }
       invariant { is_index pivot s }
-      invariant { wf_path p s }
+      invariant { is_index oldpivot s }
+      invariant { nth p (p.size - 1) = pivot }
+      invariant { nth p (p.size - 2) = oldpivot }
+      invariant { wf_path p s } (* problème sur distinct *)
+      invariant { all_on_left s oldpivot pivot }
+      invariant {
+        forall t: int. 1 <= t < p.size ->
+          all_on_left s (nth p (t-1)) (nth p t)
+      }
       let next = largest s pivot s[oldpivot] in
       if next = hd then raise Exit;
       oldpivot <- pivot;
       pivot <- next;
+      assert { pivot = next };
       append p next;
+      assert { nth p (p.size - 1) = next };
+      (* assert { last p = next }; *)
     done;
     absurd
   with Exit -> p
