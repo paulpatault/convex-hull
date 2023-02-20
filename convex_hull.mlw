@@ -352,23 +352,24 @@ let function largest (s: pt_set) (pivot: int) (ghost base: pt): int
       k <> pivot ->
       s[k] <> base ->
       ccw base s[pivot] s[k] } (* all on left base-pivot *)
-  ensures { all_on_left s pivot result }
   ensures { is_index result s }
   ensures { result <> pivot }
+  ensures { all_on_left s pivot result }
 =
   let ref res = if pivot = 0 then 1 else 0 in
-  let ghost res_init = if pivot = 0 then 1 else 0 in
+  let ghost lo : int = res+1 in
   for i = res+1 to s.length - 1 do
     invariant { is_index res s }
-    invariant { i > 0 -> is_index (i-1) s }
+    invariant { is_index (i-1) s }
+    invariant { res <> pivot } (* pour la post *)
     invariant {
-      forall j: int. res_init+1 <= j < i - 1 ->
-      j <> pivot ->
-      ccw s[pivot] s[res_init] s[j]
+      forall j: int. lo <= j < i ->
+      diff2 j pivot res ->
+      ccw s[pivot] s[res] s[j] (* ceux qu'on a vu sont à gauche de notre segment pivot-res *)
     }
     if i <> pivot then
       if ccw s[pivot] s[i] s[res] then
-           res <- i;
+        res <- i;
   done;
   res
 
