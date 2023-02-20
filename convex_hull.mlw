@@ -363,7 +363,7 @@ let function largest (s: pt_set) (pivot: int) (ghost base: pt): int
     invariant { is_index (i-1) s }
     invariant { res <> pivot } (* pour la post *)
     invariant {
-      forall j: int. lo <= j < i ->
+      forall j: int. 0 <= j < i ->
       diff2 j pivot res ->
       ccw s[pivot] s[res] s[j] (* ceux qu'on a vu sont à gauche de notre segment pivot-res *)
     }
@@ -405,8 +405,12 @@ let jarvis_no_termination (s:pt_set) : path
       invariant { nth p (p.size - 2) = oldpivot }
       invariant { forall i:int. 0 < i < p.size - 1 -> nth p i = pivot ->
         let elt = nth p (i-1) in
-        diff2 elt pivot oldpivot ->
-        ccw s[elt] s[oldpivot] s[pivot] }
+        (* diff2 elt pivot oldpivot ->
+        ccw s[elt] s[oldpivot] s[pivot] } *)
+        (* ca marche*)
+        is_on_right s hd elt pivot } (* ca marche*)
+        (* diff2 elt hd pivot ->
+        ccw s[hd] s[pivot] s[elt] } *)
       invariant { forall i: int. 1 <= i < p.size -> all_on_left s (nth p (i-1)) (nth p i) }
       invariant { forall i: int. 0 < i < p.size - 1 -> nth p i <> pivot }
       invariant { forall i j: int. 0 <= i < p.size -> 0 <= j < p.size -> i <> j -> nth p i <> nth p j }

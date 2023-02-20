@@ -135,8 +135,8 @@
  <goal name="check_is_convex_hull&#39;vc" expl="VC for check_is_convex_hull" proved="true">
  <proof prover="4" timelimit="5"><result status="valid" time="0.04" steps="545"/></proof>
  </goal>
- <goal name="largest&#39;vc" expl="VC for largest">
- <transf name="split_vc" >
+ <goal name="largest&#39;vc" expl="VC for largest" proved="true">
+ <transf name="split_vc" proved="true" >
   <goal name="largest&#39;vc.0" expl="loop invariant init" proved="true">
   <proof prover="4"><result status="valid" time="0.01" steps="18"/></proof>
   </goal>
@@ -147,7 +147,7 @@
   <proof prover="4"><result status="valid" time="0.00" steps="15"/></proof>
   </goal>
   <goal name="largest&#39;vc.3" expl="loop invariant init" proved="true">
-  <proof prover="4"><result status="valid" time="0.00" steps="15"/></proof>
+  <proof prover="4"><result status="valid" time="0.01" steps="37"/></proof>
   </goal>
   <goal name="largest&#39;vc.4" expl="index in array bounds" proved="true">
   <proof prover="4"><result status="valid" time="0.01" steps="26"/></proof>
@@ -168,7 +168,7 @@
   <proof prover="4"><result status="valid" time="0.00" steps="31"/></proof>
   </goal>
   <goal name="largest&#39;vc.10" expl="loop invariant preservation" proved="true">
-  <proof prover="0"><result status="valid" time="0.14" steps="26036"/></proof>
+  <proof prover="0"><result status="valid" time="0.13" steps="27092"/></proof>
   <proof prover="3"><result status="timeout" time="1.00"/></proof>
   <proof prover="4"><result status="timeout" time="1.00"/></proof>
   </goal>
@@ -176,21 +176,19 @@
   <proof prover="4"><result status="valid" time="0.00" steps="26"/></proof>
   </goal>
   <goal name="largest&#39;vc.12" expl="loop invariant preservation" proved="true">
-  <proof prover="4"><result status="valid" time="0.01" steps="37"/></proof>
+  <proof prover="4"><result status="valid" time="0.00" steps="37"/></proof>
   </goal>
   <goal name="largest&#39;vc.13" expl="loop invariant preservation" proved="true">
   <proof prover="4"><result status="valid" time="0.00" steps="28"/></proof>
   </goal>
   <goal name="largest&#39;vc.14" expl="loop invariant preservation" proved="true">
-  <proof prover="0" obsolete="true"><result status="timeout" time="1.00" steps="138484"/></proof>
-  <proof prover="3" obsolete="true"><result status="timeout" time="1.00"/></proof>
-  <proof prover="4"><result status="valid" time="0.07" steps="385"/></proof>
+  <proof prover="4"><result status="valid" time="0.01" steps="385"/></proof>
   </goal>
   <goal name="largest&#39;vc.15" expl="loop invariant preservation" proved="true">
   <proof prover="4"><result status="valid" time="0.00" steps="22"/></proof>
   </goal>
   <goal name="largest&#39;vc.16" expl="loop invariant preservation" proved="true">
-  <proof prover="4"><result status="valid" time="0.00" steps="22"/></proof>
+  <proof prover="4"><result status="valid" time="0.01" steps="22"/></proof>
   </goal>
   <goal name="largest&#39;vc.17" expl="loop invariant preservation" proved="true">
   <proof prover="4"><result status="valid" time="0.00" steps="23"/></proof>
@@ -206,10 +204,15 @@
   <proof prover="3" obsolete="true"><result status="timeout" time="1.00"/></proof>
   <proof prover="4"><result status="valid" time="0.00" steps="14"/></proof>
   </goal>
-  <goal name="largest&#39;vc.21" expl="postcondition">
-  <proof prover="0"><result status="timeout" time="1.00" steps="165029"/></proof>
-  <proof prover="3"><result status="timeout" time="1.00"/></proof>
-  <proof prover="4"><result status="timeout" time="1.00"/></proof>
+  <goal name="largest&#39;vc.21" expl="postcondition" proved="true">
+  <transf name="split_vc" proved="true" >
+   <goal name="largest&#39;vc.21.0" expl="postcondition" proved="true">
+   <proof prover="4"><result status="valid" time="0.01" steps="43"/></proof>
+   </goal>
+   <goal name="largest&#39;vc.21.1" expl="postcondition" proved="true">
+   <proof prover="4"><result status="valid" time="0.01" steps="42"/></proof>
+   </goal>
+  </transf>
   </goal>
   <goal name="largest&#39;vc.22" expl="out of loop bounds" proved="true">
   <proof prover="4"><result status="valid" time="0.01" steps="11"/></proof>
@@ -248,21 +251,26 @@
   <proof prover="4"><result status="valid" time="0.00" steps="26"/></proof>
   </goal>
   <goal name="jarvis_no_termination&#39;vc.9" expl="loop invariant init" proved="true">
+  <proof prover="0" obsolete="true"><undone/></proof>
+  <proof prover="3" obsolete="true"><undone/></proof>
+  <proof prover="4"><result status="valid" time="0.01" steps="81"/></proof>
+  </goal>
+  <goal name="jarvis_no_termination&#39;vc.10" expl="loop invariant init" proved="true">
   <proof prover="0" obsolete="true"><result status="timeout" time="1.00" steps="97417"/></proof>
   <proof prover="3" obsolete="true"><result status="timeout" time="1.00"/></proof>
   <proof prover="4" obsolete="true"><result status="timeout" time="1.00"/></proof>
   <transf name="split_vc" proved="true" >
-   <goal name="jarvis_no_termination&#39;vc.9.0" expl="loop invariant init" proved="true">
-   <proof prover="0" obsolete="true"><result status="timeout" time="1.00" steps="109613"/></proof>
-   <proof prover="3" obsolete="true"><result status="timeout" time="1.00"/></proof>
+   <goal name="jarvis_no_termination&#39;vc.10.0" expl="loop invariant init" proved="true">
+   <proof prover="0" obsolete="true"><undone/></proof>
+   <proof prover="3" obsolete="true"><undone/></proof>
    <proof prover="4"><result status="valid" time="0.01" steps="80"/></proof>
    </goal>
+   <goal name="jarvis_no_termination&#39;vc.9.0" expl="loop invariant init">
+   <proof prover="0"><undone/></proof>
+   <proof prover="3"><undone/></proof>
+   <proof prover="4"><undone/></proof>
+   </goal>
   </transf>
-  </goal>
-  <goal name="jarvis_no_termination&#39;vc.10" expl="loop invariant init" proved="true">
-  <proof prover="0" obsolete="true"><undone/></proof>
-  <proof prover="3" obsolete="true"><undone/></proof>
-  <proof prover="4"><result status="valid" time="0.01" steps="81"/></proof>
   </goal>
   <goal name="jarvis_no_termination&#39;vc.11" expl="loop invariant init" proved="true">
   <proof prover="4"><result status="valid" time="0.01" steps="89"/></proof>
@@ -277,16 +285,18 @@
   <proof prover="4"><result status="valid" time="0.01" steps="48"/></proof>
   </goal>
   <goal name="jarvis_no_termination&#39;vc.15" expl="loop invariant init" proved="true">
-  <proof prover="4"><result status="valid" time="0.01" steps="40"/></proof>
+  <proof prover="0" obsolete="true"><undone/></proof>
+  <proof prover="3" obsolete="true"><undone/></proof>
+  <proof prover="4"><result status="valid" time="0.00" steps="40"/></proof>
   </goal>
   <goal name="jarvis_no_termination&#39;vc.16" expl="loop invariant init" proved="true">
   <proof prover="4"><result status="valid" time="0.01" steps="65"/></proof>
   </goal>
   <goal name="jarvis_no_termination&#39;vc.17" expl="loop invariant init" proved="true">
-  <proof prover="4"><result status="valid" time="0.03" steps="290"/></proof>
+  <proof prover="4"><result status="valid" time="0.03" steps="274"/></proof>
   </goal>
   <goal name="jarvis_no_termination&#39;vc.18" expl="index in array bounds" proved="true">
-  <proof prover="4"><result status="valid" time="0.01" steps="80"/></proof>
+  <proof prover="4"><result status="valid" time="0.01" steps="75"/></proof>
   </goal>
   <goal name="jarvis_no_termination&#39;vc.19" expl="precondition" proved="true">
   <proof prover="4"><result status="valid" time="0.01" steps="43"/></proof>
@@ -315,9 +325,9 @@
      <proof prover="4" timelimit="5" memlimit="2000" obsolete="true"><result status="timeout" time="5.00"/></proof>
      <transf name="inline_goal" proved="true" >
       <goal name="jarvis_no_termination&#39;vc.22.0.0.0.0" expl="precondition" proved="true">
-      <proof prover="0"><result status="valid" time="1.19" steps="270964"/></proof>
-      <proof prover="3"><result status="timeout" time="1.00"/></proof>
-      <proof prover="4"><result status="timeout" time="1.00"/></proof>
+      <proof prover="0" timelimit="10" memlimit="4000"><result status="valid" time="2.23" steps="867103"/></proof>
+      <proof prover="3" timelimit="10" memlimit="4000"><result status="timeout" time="10.00"/></proof>
+      <proof prover="4" timelimit="10" memlimit="4000"><result status="timeout" time="10.00"/></proof>
       </goal>
      </transf>
      </goal>
@@ -328,9 +338,16 @@
   </transf>
   </goal>
   <goal name="jarvis_no_termination&#39;vc.23" expl="postcondition" proved="true">
-  <proof prover="0" obsolete="true"><result status="timeout" time="1.00" steps="220922"/></proof>
+  <proof prover="0" obsolete="true"><result status="timeout" time="1.00" steps="284217"/></proof>
   <proof prover="3" obsolete="true"><result status="timeout" time="1.00"/></proof>
-  <proof prover="4"><result status="valid" time="0.05" steps="654"/></proof>
+  <proof prover="4" obsolete="true"><result status="timeout" time="1.00"/></proof>
+  <transf name="split_vc" proved="true" >
+   <goal name="jarvis_no_termination&#39;vc.23.0" expl="postcondition" proved="true">
+   <proof prover="0" timelimit="10" memlimit="4000" obsolete="true"><result status="timeout" time="10.00" steps="1946782"/></proof>
+   <proof prover="3" timelimit="10" memlimit="4000" obsolete="true"><result status="timeout" time="10.00"/></proof>
+   <proof prover="4"><result status="valid" time="0.05" steps="450"/></proof>
+   </goal>
+  </transf>
   </goal>
   <goal name="jarvis_no_termination&#39;vc.24" expl="loop invariant preservation" proved="true">
   <proof prover="4"><result status="valid" time="0.01" steps="69"/></proof>
@@ -344,19 +361,33 @@
   <proof prover="4"><result status="valid" time="0.01" steps="72"/></proof>
   </goal>
   <goal name="jarvis_no_termination&#39;vc.27" expl="loop invariant preservation" proved="true">
-  <proof prover="0" obsolete="true"><result status="timeout" time="1.00" steps="155090"/></proof>
+  <proof prover="0" obsolete="true"><result status="timeout" time="1.00" steps="234009"/></proof>
   <proof prover="3" obsolete="true"><result status="timeout" time="1.00"/></proof>
   <proof prover="4" obsolete="true"><result status="timeout" time="1.00"/></proof>
   <transf name="split_vc" proved="true" >
    <goal name="jarvis_no_termination&#39;vc.27.0" expl="loop invariant preservation" proved="true">
-   <proof prover="0" timelimit="5" memlimit="2000" obsolete="true"><result status="timeout" time="5.00" steps="843749"/></proof>
-   <proof prover="3" timelimit="5" memlimit="2000" obsolete="true"><result status="timeout" time="5.00"/></proof>
-   <proof prover="4"><result status="valid" time="0.04" steps="397"/></proof>
+   <proof prover="0" obsolete="true"><result status="timeout" time="1.00" steps="216565"/></proof>
+   <proof prover="3" timelimit="10" memlimit="4000"><result status="valid" time="0.03" steps="104154"/></proof>
+   <proof prover="4"><result status="valid" time="0.03" steps="446"/></proof>
    </goal>
   </transf>
   </goal>
   <goal name="jarvis_no_termination&#39;vc.28" expl="loop invariant preservation" proved="true">
-  <proof prover="4"><result status="valid" time="0.00" steps="485"/></proof>
+  <proof prover="0" obsolete="true"><result status="timeout" time="1.00" steps="155090"/></proof>
+  <proof prover="3" obsolete="true"><result status="timeout" time="1.00"/></proof>
+  <proof prover="4" obsolete="true"><result status="timeout" time="1.00"/></proof>
+  <transf name="split_vc" proved="true" >
+   <goal name="jarvis_no_termination&#39;vc.28.0" expl="loop invariant preservation" proved="true">
+   <proof prover="0" obsolete="true"><undone/></proof>
+   <proof prover="3" obsolete="true"><undone/></proof>
+   <proof prover="4"><result status="valid" time="0.05" steps="318"/></proof>
+   </goal>
+   <goal name="jarvis_no_termination&#39;vc.26.0" expl="loop invariant preservation">
+   <proof prover="0"><undone/></proof>
+   <proof prover="3"><undone/></proof>
+   <proof prover="4"><undone/></proof>
+   </goal>
+  </transf>
   </goal>
   <goal name="jarvis_no_termination&#39;vc.29" expl="loop invariant preservation" proved="true">
   <proof prover="0" obsolete="true"><result status="timeout" time="1.00" steps="313259"/></proof>
@@ -366,7 +397,7 @@
    <goal name="jarvis_no_termination&#39;vc.29.0" expl="loop invariant preservation" proved="true">
    <proof prover="0" timelimit="30" memlimit="4000" obsolete="true"><result status="timeout" time="30.00" steps="2693387"/></proof>
    <proof prover="3" timelimit="30" memlimit="4000" obsolete="true"><result status="timeout" time="30.00"/></proof>
-   <proof prover="4"><result status="valid" time="0.03" steps="328"/></proof>
+   <proof prover="4"><result status="valid" time="0.03" steps="257"/></proof>
    </goal>
   </transf>
   </goal>
@@ -378,16 +409,63 @@
    <goal name="jarvis_no_termination&#39;vc.30.0" expl="loop invariant preservation" proved="true">
    <proof prover="0" timelimit="30" memlimit="4000" obsolete="true"><result status="timeout" time="30.00" steps="2897271"/></proof>
    <proof prover="3" timelimit="30" memlimit="4000" obsolete="true"><result status="timeout" time="30.00"/></proof>
-   <proof prover="4"><result status="valid" time="0.04" steps="442"/></proof>
+   <proof prover="4"><result status="valid" time="0.04" steps="345"/></proof>
    </goal>
   </transf>
   </goal>
   <goal name="jarvis_no_termination&#39;vc.31" expl="loop invariant preservation" proved="true">
+  <proof prover="0"><result status="timeout" time="1.00" steps="313092"/></proof>
+  <proof prover="3"><result status="timeout" time="1.00"/></proof>
+  <proof prover="4"><result status="timeout" time="1.00"/></proof>
   <transf name="split_vc" proved="true" >
    <goal name="jarvis_no_termination&#39;vc.31.0" expl="loop invariant preservation" proved="true">
-   <proof prover="0" obsolete="true"><result status="timeout" time="1.00" steps="150300"/></proof>
-   <proof prover="3" obsolete="true"><result status="timeout" time="1.00"/></proof>
-   <proof prover="4"><result status="valid" time="1.92" steps="8775"/></proof>
+   <proof prover="0" timelimit="5" memlimit="2000"><result status="timeout" time="5.00" steps="1234862"/></proof>
+   <proof prover="3" timelimit="5" memlimit="2000"><result status="timeout" time="5.00"/></proof>
+   <proof prover="4" timelimit="5" memlimit="2000"><result status="timeout" time="5.00"/></proof>
+   <transf name="inline_goal" proved="true" >
+    <goal name="jarvis_no_termination&#39;vc.31.0.0" expl="loop invariant preservation" proved="true">
+    <transf name="split_all_full" proved="true" >
+     <goal name="jarvis_no_termination&#39;vc.31.0.0.0" expl="loop invariant preservation" proved="true">
+     <proof prover="0"><result status="timeout" time="1.00" steps="349264"/></proof>
+     <proof prover="3"><result status="timeout" time="1.00"/></proof>
+     <proof prover="4"><result status="timeout" time="1.00"/></proof>
+     <transf name="inline_goal" >
+      <goal name="jarvis_no_termination&#39;vc.31.0.0.0.0" expl="loop invariant preservation">
+      <proof prover="0"><result status="timeout" time="2.00" steps="481569"/></proof>
+      <proof prover="3"><result status="timeout" time="1.00"/></proof>
+      <proof prover="4"><result status="timeout" time="1.00"/></proof>
+      <transf name="split_vc" >
+       <goal name="jarvis_no_termination&#39;vc.31.0.0.0.0.0" expl="loop invariant preservation">
+       <proof prover="0" timelimit="10" memlimit="4000"><result status="timeout" time="10.00" steps="5638945"/></proof>
+       <proof prover="3" timelimit="10" memlimit="4000"><result status="timeout" time="10.00"/></proof>
+       <proof prover="4" timelimit="10" memlimit="4000"><result status="timeout" time="10.00"/></proof>
+       </goal>
+      </transf>
+      </goal>
+     </transf>
+     <transf name="split_vc" proved="true" >
+      <goal name="jarvis_no_termination&#39;vc.31.0.0.0.0" expl="loop invariant preservation" proved="true">
+      <proof prover="0" timelimit="5" memlimit="2000"><result status="timeout" time="5.00" steps="1274171"/></proof>
+      <proof prover="3" timelimit="5" memlimit="2000"><result status="timeout" time="5.00"/></proof>
+      <proof prover="4" timelimit="5" memlimit="2000"><result status="timeout" time="5.00"/></proof>
+      <transf name="inline_goal" proved="true" >
+       <goal name="jarvis_no_termination&#39;vc.31.0.0.0.0.0" expl="loop invariant preservation" proved="true">
+       <proof prover="0" timelimit="30" memlimit="4000"><result status="valid" time="13.11" steps="3864899"/></proof>
+       <proof prover="3" timelimit="30" memlimit="4000"><result status="timeout" time="30.00"/></proof>
+       <proof prover="4" timelimit="30" memlimit="4000"><result status="timeout" time="30.00"/></proof>
+       </goal>
+      </transf>
+      </goal>
+     </transf>
+     </goal>
+    </transf>
+    </goal>
+   </transf>
+   </goal>
+   <goal name="jarvis_no_termination&#39;vc.28.0" expl="loop invariant preservation">
+   <proof prover="0"><undone/></proof>
+   <proof prover="3"><undone/></proof>
+   <proof prover="4"><undone/></proof>
    </goal>
   </transf>
   </goal>
@@ -397,9 +475,9 @@
   <proof prover="4" obsolete="true"><result status="timeout" time="1.00"/></proof>
   <transf name="split_vc" proved="true" >
    <goal name="jarvis_no_termination&#39;vc.32.0" expl="loop invariant preservation" proved="true">
-   <proof prover="0" obsolete="true"><result status="timeout" time="1.00" steps="254088"/></proof>
-   <proof prover="3" obsolete="true"><result status="timeout" time="1.00"/></proof>
-   <proof prover="4"><result status="valid" time="1.54" steps="8668"/></proof>
+   <proof prover="0"><result status="timeout" time="1.00" steps="339007"/></proof>
+   <proof prover="3"><result status="timeout" time="1.00"/></proof>
+   <proof prover="4" timelimit="10" memlimit="4000"><result status="valid" time="2.76" steps="16389"/></proof>
    </goal>
   </transf>
   </goal>
@@ -409,9 +487,9 @@
   <proof prover="4" obsolete="true"><result status="timeout" time="1.00"/></proof>
   <transf name="split_vc" proved="true" >
    <goal name="jarvis_no_termination&#39;vc.33.0" expl="loop invariant preservation" proved="true">
-   <proof prover="0"><result status="timeout" time="1.00" steps="192693"/></proof>
-   <proof prover="3"><result status="timeout" time="1.00"/></proof>
-   <proof prover="4" timelimit="10" memlimit="4000"><result status="valid" time="7.37" steps="63825"/></proof>
+   <proof prover="0" timelimit="10" memlimit="4000"><result status="valid" time="7.14" steps="1253129"/></proof>
+   <proof prover="3" timelimit="10" memlimit="4000"><result status="timeout" time="10.00"/></proof>
+   <proof prover="4" timelimit="10" memlimit="4000"><result status="timeout" time="10.00"/></proof>
    </goal>
   </transf>
   </goal>
@@ -421,9 +499,9 @@
   <proof prover="4" obsolete="true"><result status="timeout" time="1.00"/></proof>
   <transf name="split_vc" proved="true" >
    <goal name="jarvis_no_termination&#39;vc.34.0" expl="loop invariant preservation" proved="true">
-   <proof prover="0" obsolete="true"><result status="timeout" time="1.00" steps="198538"/></proof>
-   <proof prover="3" obsolete="true"><result status="timeout" time="1.00"/></proof>
-   <proof prover="4"><result status="valid" time="0.69" steps="4965"/></proof>
+   <proof prover="0" timelimit="10" memlimit="4000" obsolete="true"><result status="timeout" time="10.00" steps="1717542"/></proof>
+   <proof prover="3" timelimit="10" memlimit="4000" obsolete="true"><result status="timeout" time="10.00"/></proof>
+   <proof prover="4"><result status="valid" time="0.93" steps="7886"/></proof>
    </goal>
   </transf>
   </goal>
@@ -433,9 +511,9 @@
   <proof prover="4" obsolete="true"><result status="timeout" time="1.00"/></proof>
   <transf name="split_vc" proved="true" >
    <goal name="jarvis_no_termination&#39;vc.35.0" expl="loop invariant preservation" proved="true">
-   <proof prover="0"><result status="timeout" time="1.00" steps="366343"/></proof>
+   <proof prover="0"><result status="timeout" time="1.00" steps="238238"/></proof>
    <proof prover="3"><result status="timeout" time="1.00"/></proof>
-   <proof prover="4" timelimit="10" memlimit="4000"><result status="valid" time="2.99" steps="36428"/></proof>
+   <proof prover="4" timelimit="10" memlimit="4000"><result status="valid" time="4.20" steps="33105"/></proof>
    </goal>
   </transf>
   </goal>
