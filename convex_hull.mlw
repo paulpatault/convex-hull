@@ -352,15 +352,9 @@ let function largest (s: pt_set) (pivot: int) (ghost base: pt): int
       k <> pivot ->
       s[k] <> base ->
       ccw base s[pivot] s[k] } (* all on left base-pivot *)
-  ensures {
-    forall k: int. is_index k s ->
-    diff2 k pivot result ->
-    ccw s[pivot] s[result] s[k] }
+  ensures { all_on_left s pivot result }
   ensures { is_index result s }
   ensures { result <> pivot }
-  (* ensures { result = hd
-            \/ not contains p result } *)
-  (* ensures { result <> base } *)
 =
   let ref res = if pivot = 0 then 1 else 0 in
   let ghost res_init = if pivot = 0 then 1 else 0 in
