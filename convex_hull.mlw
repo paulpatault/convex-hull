@@ -399,8 +399,6 @@ let jarvis_no_termination (s:pt_set) : path
   append p next;
   let ref oldpivot = hd in
   let ref pivot = next in
-  (* assert { nth p 0 = hd }; *)
-  (* assert { p.size > 0 }; *)
   try
     while True do
       invariant { is_index pivot s }
