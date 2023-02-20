@@ -399,38 +399,26 @@ let jarvis_no_termination (s:pt_set) : path
   append p next;
   let ref oldpivot = hd in
   let ref pivot = next in
+  (* assert { nth p 0 = hd }; *)
+  (* assert { p.size > 0 }; *)
   try
     while True do
-      invariant { p.size > 0 }
-      invariant { pivot <> hd }
       invariant { is_index pivot s }
       invariant { is_index oldpivot s }
+      invariant { p.size > 0 }
+      invariant { nth p 0 <> pivot }
+      invariant { nth p 0 = hd }
       invariant { nth p (p.size - 1) = pivot }
       invariant { nth p (p.size - 2) = oldpivot }
-      invariant { all_on_left s oldpivot pivot }
-      invariant {
-        forall t: int. 1 <= t < p.size ->
-          all_on_left s (nth p (t-1)) (nth p t)
-      }
-
       invariant { forall i:int. 0 < i < p.size - 1 -> nth p i = pivot ->
         let elt = nth p (i-1) in
         diff2 elt pivot oldpivot ->
-          ccw s[oldpivot] s[pivot] s[elt] /\
-          ccw s[pivot] s[elt] s[oldpivot] /\
-          ccw s[elt] s[oldpivot] s[pivot] /\
-          not ccw s[elt] s[pivot] s[oldpivot] /\
-          ccw s[elt] s[oldpivot] s[pivot] /\
-          ccw s[elt] s[nth p i] s[oldpivot] }
-      invariant { forall i:int. 0 < i < p.size - 1 -> nth p i <> pivot }
-      invariant { nth p 0 = hd }
-      invariant { nth p 0 <> pivot }
-      invariant { forall i:int. 0 <= i < p.size - 1 -> nth p i <> pivot }
+        ccw s[elt] s[oldpivot] s[pivot] }
+      invariant { forall i: int. 1 <= i < p.size -> all_on_left s (nth p (i-1)) (nth p i) }
+      invariant { forall i: int. 0 < i < p.size - 1 -> nth p i <> pivot }
+      invariant { forall i j: int. 0 <= i < p.size -> 0 <= j < p.size -> i <> j -> nth p i <> nth p j }
+      invariant { wf_path p s }
 
-      (* invariant { forall i:int. 0 <= i < p.size - 1 -> nth p i <> (nth p (p.size - 1)) } *)
-      invariant { forall i j:int. 0 <= i < p.size -> 0 <= j < p.size -> i <> j -> nth p i <> nth p j }
-
-      invariant { wf_path p s } (* problème sur distinct *)
       let next = largest s pivot s[oldpivot] in
       (* assert { next = hd \/ not contains p next }; *)
       if next = hd then raise Exit;
