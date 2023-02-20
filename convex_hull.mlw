@@ -19,7 +19,7 @@ let constant __CONDITION_TO_BE_COMPLETED__ : bool = False
 let constant __FUNCTION_TO_BE_COMPLETED__ : int -> int = fun _ -> 0
 let constant __CODE_TO_BE_COMPLETED__ : unit = ()
 
-let constant __MIN_PTS_NUM__ : int = 2
+let constant __MIN_PTS_NUM__ : int = 3
 
 end
 
@@ -175,10 +175,15 @@ let check_all_on_left (s:pt_set) (i j:int) : unit
     if diff2 k i j && not ccw a b s[k] then raise Exit
   done
 
+predicate is_on_left (s: pt_set) (i j k: int) =
+  ccw s[i] s[j] s[k]
+
+predicate is_on_right (s: pt_set) (i j k: int) =
+  not is_on_left s i j k
+
 end
 
 (** {2 Module for Paths} *)
-
 
 module Path
 
@@ -192,6 +197,9 @@ module Path
   predicate is_valid_index (i:int) (p:path) =
     0 <= i < p.size
 
+  predicate contains (p: path) (elt: int) =
+    exists i: int. is_valid_index i p /\ p.elements i = elt
+
   val create () : path
     ensures { result.size = 0 }
 
@@ -204,12 +212,7 @@ module Path
     writes  { p }
     ensures { p.size = (old p.size) + 1 }
     ensures { p.elements (old p.size) = v }
-    ensures { p.elements (p.size - 1) = v }
     ensures { forall i. 0 <= i < (old p.size) -> p.elements i = (old p.elements) i }
-
-  (* val last (p:path) : int
-    requires { is_valid_index (p.size - 1) p }
-    ensures { result = p.elements (p.size - 1) } *)
 
 end
 
@@ -263,8 +266,6 @@ let function wf_path (p:path) (s:pt_set)
     True
   with Exit -> False
   end
-
-
 
 let function plus1mod (i len: int): int
 = if i + 1 = len then 0 else i+1
@@ -330,7 +331,7 @@ predicate unique_minimal_y (s:pt_set) (i:int) =
 
    All points are assumed to be on the left of the segment (base,pivot) *)
 
-let largest (s:pt_set) (pivot:int) (ghost base:pt) : int
+let function largest (s: pt_set) (pivot: int) (ghost base: pt): int
   requires { no_colinear_triple s }
   requires { length s >= __MIN_PTS_NUM__ }
   requires { is_index pivot s }
@@ -344,17 +345,21 @@ let largest (s:pt_set) (pivot:int) (ghost base:pt) : int
     diff2 k pivot result ->
     ccw s[pivot] s[result] s[k] }
   ensures { is_index result s }
+  ensures { result <> pivot }
+  (* ensures { result = hd
+            \/ not contains p result } *)
+  (* ensures { result <> base } *)
 =
   let ref res = if pivot = 0 then 1 else 0 in
   let ghost res_init = if pivot = 0 then 1 else 0 in
   for i = res+1 to s.length - 1 do
+    invariant { is_index res s }
+    invariant { i > 0 -> is_index (i-1) s }
     invariant {
       forall j: int. res_init+1 <= j < i - 1 ->
       j <> pivot ->
       ccw s[pivot] s[res_init] s[j]
     }
-    invariant { i > 0 -> is_index (i-1) s }
-    invariant { is_index res s }
     if i <> pivot then
       if ccw s[pivot] s[i] s[res] then
            res <- i;
@@ -363,11 +368,6 @@ let largest (s:pt_set) (pivot:int) (ghost base:pt) : int
 
 
 (** QUESTION 6: Jarvis, not proving termination *)
-
-let lemma nth_elements (p: path) (i: int): unit
-  requires { is_valid_index i p }
-  ensures { nth p i = p.elements i }
-= ()
 
 function translate_left (p:pt) : pt =
   { x = p.x -. 1.0 ; y = p.y }
@@ -387,33 +387,29 @@ let jarvis_no_termination (s:pt_set) : path
   append p next;
   let ref oldpivot = hd in
   let ref pivot = next in
-  assert { nth p (p.size - 1) = pivot = next };
-  assert { nth p (p.size - 2) = oldpivot = hd };
   try
     while True do
       invariant { p.size > 0 }
+      invariant { pivot <> hd }
       invariant { is_index pivot s }
       invariant { is_index oldpivot s }
       invariant { nth p (p.size - 1) = pivot }
       invariant { nth p (p.size - 2) = oldpivot }
-      invariant { wf_path p s } (* problème sur distinct *)
       invariant { all_on_left s oldpivot pivot }
       invariant {
         forall t: int. 1 <= t < p.size ->
           all_on_left s (nth p (t-1)) (nth p t)
       }
+      invariant { wf_path p s } (* problème sur distinct *)
       let next = largest s pivot s[oldpivot] in
+      (* assert { next = hd \/ not contains p next }; *)
       if next = hd then raise Exit;
+      assert { contains p next -> is_on_right s pivot next hd };
+      assert { contains p next -> not all_on_left s pivot next };
       oldpivot <- pivot;
       pivot <- next;
-      (* assert { pivot = next }; *)
-      (* label L in *)
-      (* assert { nth p (p.size - 1) = oldpivot }; *)
+      assert { not contains p next };
       append p next;
-      (* assert { p.size = (p.size at L) + 1 }; *)
-      (* assert { nth p (p.size - 1) = next }; *)
-      (* assert { nth p (p.size - 2) = oldpivot }; *)
-
     done;
     absurd
   with Exit -> p
