@@ -364,6 +364,11 @@ let largest (s:pt_set) (pivot:int) (ghost base:pt) : int
 
 (** QUESTION 6: Jarvis, not proving termination *)
 
+let lemma nth_elements (p: path) (i: int): unit
+  requires { is_valid_index i p }
+  ensures { nth p i = p.elements i }
+= ()
+
 function translate_left (p:pt) : pt =
   { x = p.x -. 1.0 ; y = p.y }
 
@@ -386,6 +391,7 @@ let jarvis_no_termination (s:pt_set) : path
   assert { nth p (p.size - 2) = oldpivot = hd };
   try
     while True do
+      invariant { p.size > 0 }
       invariant { is_index pivot s }
       invariant { is_index oldpivot s }
       invariant { nth p (p.size - 1) = pivot }
@@ -400,10 +406,14 @@ let jarvis_no_termination (s:pt_set) : path
       if next = hd then raise Exit;
       oldpivot <- pivot;
       pivot <- next;
-      assert { pivot = next };
+      (* assert { pivot = next }; *)
+      (* label L in *)
+      (* assert { nth p (p.size - 1) = oldpivot }; *)
       append p next;
-      assert { nth p (p.size - 1) = next };
-      (* assert { last p = next }; *)
+      (* assert { p.size = (p.size at L) + 1 }; *)
+      (* assert { nth p (p.size - 1) = next }; *)
+      (* assert { nth p (p.size - 2) = oldpivot }; *)
+
     done;
     absurd
   with Exit -> p
