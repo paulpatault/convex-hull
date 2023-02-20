@@ -102,8 +102,14 @@ predicate colinear (p1 p2 p3:pt) =
 predicate ccw (p1 p2 p3:pt) =
   crossproduct p1 p2 p3 >. 0.0
 
+predicate ccw_neg (p1 p2 p3:pt) =
+  crossproduct p1 p2 p3 <. 0.0
+
 val ccw (p1 p2 p3:pt) : bool
   ensures { result <-> ccw p1 p2 p3 }
+
+val ccw_neg (p1 p2 p3:pt) : bool
+  ensures { result <-> ccw_neg p1 p2 p3 }
 
 lemma knuth1:
   forall p1 p2 p3:pt. ccw p1 p2 p3 -> ccw p2 p3 p1
@@ -176,10 +182,16 @@ let check_all_on_left (s:pt_set) (i j:int) : unit
   done
 
 predicate is_on_left (s: pt_set) (i j k: int) =
+  is_index i s ->
+  is_index j s ->
+  is_index k s ->
   ccw s[i] s[j] s[k]
 
 predicate is_on_right (s: pt_set) (i j k: int) =
-  not is_on_left s i j k
+  is_index i s ->
+  is_index j s ->
+  is_index k s ->
+  ccw s[i] s[k] s[j]
 
 end
 
@@ -400,15 +412,33 @@ let jarvis_no_termination (s:pt_set) : path
         forall t: int. 1 <= t < p.size ->
           all_on_left s (nth p (t-1)) (nth p t)
       }
+
+      invariant { forall i:int. 0 < i < p.size - 1 -> nth p i = pivot ->
+        let elt = nth p (i-1) in
+        diff2 elt pivot oldpivot ->
+          ccw s[oldpivot] s[pivot] s[elt] /\
+          ccw s[pivot] s[elt] s[oldpivot] /\
+          ccw s[elt] s[oldpivot] s[pivot] /\
+          not ccw s[elt] s[pivot] s[oldpivot] /\
+          ccw s[elt] s[oldpivot] s[pivot] /\
+          ccw s[elt] s[nth p i] s[oldpivot] }
+      invariant { forall i:int. 0 < i < p.size - 1 -> nth p i <> pivot }
+      invariant { nth p 0 = hd }
+      invariant { nth p 0 <> pivot }
+      invariant { forall i:int. 0 <= i < p.size - 1 -> nth p i <> pivot }
+
+      (* invariant { forall i:int. 0 <= i < p.size - 1 -> nth p i <> (nth p (p.size - 1)) } *)
+      invariant { forall i j:int. 0 <= i < p.size -> 0 <= j < p.size -> i <> j -> nth p i <> nth p j }
+
       invariant { wf_path p s } (* problème sur distinct *)
       let next = largest s pivot s[oldpivot] in
       (* assert { next = hd \/ not contains p next }; *)
       if next = hd then raise Exit;
-      assert { contains p next -> is_on_right s pivot next hd };
-      assert { contains p next -> not all_on_left s pivot next };
+      (* assert { contains p next -> is_on_right s pivot next hd }; *)
+      (* assert { contains p next -> not all_on_left s pivot next }; *)
       oldpivot <- pivot;
       pivot <- next;
-      assert { not contains p next };
+      (* assert { not contains p next }; *)
       append p next;
     done;
     absurd
