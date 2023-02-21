@@ -250,11 +250,11 @@ let function distinct (p:path) : bool
       p.elements i <> p.elements j }
 = try
     for i = 0 to p.size - 1 do
-    invariant { forall k l: int. 0 <= k < l < i -> p.elements k <> p.elements l }
-    for j = 0 to i - 1 do
-    invariant { forall k: int. 0 <= k < j -> p.elements k <> p.elements i }
-      if nth p i = nth p j then raise Exit
-    done
+      invariant { forall k l: int. 0 <= k < l < i -> p.elements k <> p.elements l }
+      for j = 0 to i - 1 do
+        invariant { forall k: int. 0 <= k < j -> p.elements k <> p.elements i }
+        if nth p i = nth p j then raise Exit
+      done
     done;
     True
   with Exit -> False
@@ -357,7 +357,6 @@ let function largest (s: pt_set) (pivot: int) (ghost base: pt): int
   ensures { all_on_left s pivot result }
 =
   let ref res = if pivot = 0 then 1 else 0 in
-  let ghost lo : int = res+1 in
   for i = res+1 to s.length - 1 do
     invariant { is_index res s }
     invariant { is_index (i-1) s }
@@ -452,13 +451,22 @@ let rec ghost inverse (l:int) (f:int -> int) (v:int) : int
   requires { 0 <= v < l }
   variant { l }
   ensures { 0 <= result < l /\ v = f result }
-= 0 (* code/proof to be completed *)
+= 0
+(* = if l = 1 then 0
+  else inverse (l-1) f v *)
 
+
+let lemma wf_injection (p: path) (s: pt_set) : unit
+  requires { wf_path p s }
+  ensures { injective (nth p) p.size }
+= ()
 
 
 let jarvis (s:pt_set) : path
-  requires { __FORMULA_TO_BE_COMPLETED__ }
-  ensures { is_convex_hull s result }
+  requires { no_colinear_triple s }
+  requires { exists i: int. unique_minimal_y s i }
+  requires { length s >= __MIN_PTS_NUM__ }
+  (* ensures { is_convex_hull s result } *)
 =
   let hd = lowest_leftmost s in
   let p = create () in
@@ -470,8 +478,19 @@ let jarvis (s:pt_set) : path
   let ref pivot = next in
   try
     while True do
-      invariant { __FORMULA_TO_BE_COMPLETED__      }
-      variant { __VARIANT_TO_BE_COMPLETED__ }
+      invariant { is_index pivot s }
+      invariant { is_index oldpivot s }
+      invariant { wf_path p s }
+      invariant { injective (nth p) p.size }
+      invariant { injective (nth p) p.size -> distinct p }
+      invariant { s.length < p.size -> exists i j: int. is_valid_index i p /\ is_valid_index j p /\ i < j /\ nth p i = nth p j }
+      invariant { (exists i j: int. is_valid_index i p /\ is_valid_index j p /\ i < j /\ nth p i = nth p j) -> not distinct p }
+
+      invariant { s.length < p.size -> not distinct p }
+      invariant { not distinct p -> not wf_path p s }
+      invariant { s.length < p.size -> not wf_path p s }
+      variant { s.length - p.size }
+
       let next = largest s pivot s[oldpivot] in
       if next = hd then raise Exit;
       oldpivot <- pivot;
