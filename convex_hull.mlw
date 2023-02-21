@@ -444,39 +444,13 @@ predicate injective (f: int -> int) (n: int) =
   (** `injective f n m` is true when `f` is an injection
       from `(0..n-1)` to `(0..m-1)` *)
 
-(* let rec ghost inverse (l:int) (f:int -> int) (v:int) : int
-  requires { l >= 1 }
-  requires { range f l l }
-  requires { injective f l }
-  requires { 0 <= v < l }
-  variant { l }
-  ensures { 0 <= result < l /\ v = f result }
-= 0 *)
-
-
 let lemma wf_injection (p: path) (s: pt_set) : unit
   requires { wf_path p s }
   ensures { injective (nth p) p.size }
   ensures { range (nth p) (p.size) (s.length) }
 = ()
 
-let rec lemma pigeonhole (n m: int) (f: int -> int)
-  requires { 0 <= m < n }
-  requires { range f n m }
-  ensures  { exists i1, i2. 0 <= i1 < i2 < n /\ f i1 = f i2 }
-  variant  { m }
-= for i = 0 to n - 1 do
-    invariant { forall k. 0 <= k < i -> f k < m - 1 }
-    if f i = m - 1 then begin
-      for j = i + 1 to n - 1 do
-        invariant { forall k. i < k < j -> f k < m - 1 }
-        if f j = m - 1 then return
-      done;
-      let function g k = if k < i then f k else f (k + 1) in
-      pigeonhole (n - 1) (m - 1) g;
-      return end
-  done;
-  pigeonhole n (m - 1) f
+use pigeon.Pigeonhole
 
 let rec lemma chaussettes_aux (f: int -> int) (n m: int) : unit
   requires { n >= 0 }
@@ -526,12 +500,10 @@ let jarvis (s:pt_set) : path
       invariant { wf_path p s }
 
       (* termination *)
-      invariant { injective (nth p) p.size }
-      invariant { injective (nth p) p.size -> distinct p }
-      invariant { forall i: int. is_valid_index i p -> is_index (nth p i) s }
-      invariant { forall i: int. is_valid_index i p -> 0 <= nth p i < s.length }
-      invariant { range (nth p) (p.size) (s.length) }
-      invariant { s.length < p.size -> not distinct p }
+      (* invariant { injective (nth p) p.size -> distinct p } *)
+      (* invariant { forall i: int. is_valid_index i p -> is_index (nth p i) s } *)
+      (* invariant { forall i: int. is_valid_index i p -> 0 <= nth p i < s.length } *)
+      (* invariant { s.length < p.size -> not distinct p } *)
       variant { s.length - p.size }
 
       let next = largest s pivot s[oldpivot] in
