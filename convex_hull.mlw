@@ -444,16 +444,14 @@ predicate injective (f: int -> int) (n: int) =
   (** `injective f n m` is true when `f` is an injection
       from `(0..n-1)` to `(0..m-1)` *)
 
-let rec ghost inverse (l:int) (f:int -> int) (v:int) : int
+(* let rec ghost inverse (l:int) (f:int -> int) (v:int) : int
   requires { l >= 1 }
   requires { range f l l }
   requires { injective f l }
   requires { 0 <= v < l }
   variant { l }
   ensures { 0 <= result < l /\ v = f result }
-= 0
-(* = if l = 1 then 0
-  else inverse (l-1) f v *)
+= 0 *)
 
 
 let lemma wf_injection (p: path) (s: pt_set) : unit
@@ -462,11 +460,31 @@ let lemma wf_injection (p: path) (s: pt_set) : unit
   ensures { range (nth p) (p.size) (s.length) }
 = ()
 
-let lemma chaussettes_aux (f: int -> int) (n m: int) : unit
+let rec lemma pigeonhole (n m: int) (f: int -> int)
+  requires { 0 <= m < n }
+  requires { range f n m }
+  ensures  { exists i1, i2. 0 <= i1 < i2 < n /\ f i1 = f i2 }
+  variant  { m }
+= for i = 0 to n - 1 do
+    invariant { forall k. 0 <= k < i -> f k < m - 1 }
+    if f i = m - 1 then begin
+      for j = i + 1 to n - 1 do
+        invariant { forall k. i < k < j -> f k < m - 1 }
+        if f j = m - 1 then return
+      done;
+      let function g k = if k < i then f k else f (k + 1) in
+      pigeonhole (n - 1) (m - 1) g;
+      return end
+  done;
+  pigeonhole n (m - 1) f
+
+let rec lemma chaussettes_aux (f: int -> int) (n m: int) : unit
+  requires { n >= 0 }
+  requires { m >= 0 }
   requires { range f n m }
   requires { injective f n }
   ensures  { n <= m }
-  (* ensures  { not n > m } *)
+  variant  { m }
 = ()
 
 let lemma chaussettes (p: path) (s: pt_set) : unit
@@ -501,14 +519,7 @@ let jarvis (s:pt_set) : path
       invariant { nth p 0 = hd }
       invariant { nth p (p.size - 1) = pivot }
       invariant { nth p (p.size - 2) = oldpivot }
-      invariant { forall i:int. 0 < i < p.size - 1 -> nth p i = pivot ->
-        let elt = nth p (i-1) in
-        (* diff2 elt pivot oldpivot ->
-        ccw s[elt] s[oldpivot] s[pivot] } *)
-        (* ca marche*)
-        is_on_right s hd elt pivot } (* ca marche*)
-        (* diff2 elt hd pivot ->
-        ccw s[hd] s[pivot] s[elt] } *)
+      invariant { forall i: int. 0 < i < p.size - 1 -> nth p i = pivot -> is_on_right s hd (nth p (i-1)) pivot }
       invariant { forall i: int. 1 <= i < p.size -> all_on_left s (nth p (i-1)) (nth p i) }
       invariant { forall i: int. 0 < i < p.size - 1 -> nth p i <> pivot }
       invariant { forall i j: int. 0 <= i < p.size -> 0 <= j < p.size -> i <> j -> nth p i <> nth p j }
@@ -520,12 +531,7 @@ let jarvis (s:pt_set) : path
       invariant { forall i: int. is_valid_index i p -> is_index (nth p i) s }
       invariant { forall i: int. is_valid_index i p -> 0 <= nth p i < s.length }
       invariant { range (nth p) (p.size) (s.length) }
-      (* invariant { s.length < p.size -> (exists i: int. is_valid_index i p /\ nth p i >= s.length) } *)
-      (* invariant { s.length < p.size -> not injective (nth p) p.size } *)
-      (* invariant { (exists i j: int. is_valid_index i p /\ is_valid_index j p /\ i < j /\ nth p i = nth p j) -> not distinct p } *)
       invariant { s.length < p.size -> not distinct p }
-      (* invariant { not distinct p -> not wf_path p s } *)
-      (* invariant { s.length < p.size -> not wf_path p s } *)
       variant { s.length - p.size }
 
       let next = largest s pivot s[oldpivot] in
