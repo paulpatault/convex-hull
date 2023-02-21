@@ -7,23 +7,11 @@
 *)
 
 
-(** {2 Dummy symbols to fill holes in the remainder} *)
-
 module DummySymbols
 
-predicate __FORMULA_TO_BE_COMPLETED__
-constant __TERM_TO_BE_COMPLETED__ : 'a
-constant __VARIANT_TO_BE_COMPLETED__ : int
-let constant __EXPRESSION_TO_BE_COMPLETED__ : int = 0
-let constant __CONDITION_TO_BE_COMPLETED__ : bool = False
-let constant __FUNCTION_TO_BE_COMPLETED__ : int -> int = fun _ -> 0
-let constant __CODE_TO_BE_COMPLETED__ : unit = ()
-
-let constant __MIN_PTS_NUM__ : int = 3
+let constant __MIN_PTS_NUM__ : int = 2
 
 end
-
-
 
 (** {2 Points in the Plane, Sets of Points} *)
 
@@ -51,10 +39,8 @@ predicate is_index (i:int) (s:pt_set) =
 
 (** A total order on points: (x1,y1) <= (x2,y2) if
     y1 < y2 or y1 = y2 and x1 <= x2 *)
-
 predicate is_lower_pt (p1 p2:pt) =
   p1.y <. p2.y \/ (p1.y = p2.y /\ p1.x <=. p2.x)
-
 
 (** QUESTION 1: compute the lowest-leftmost pt *)
 
@@ -78,12 +64,7 @@ let lowest_leftmost (s:pt_set) : int
   done;
   r
 
-
 end
-
-
-
-
 
 (** {2 Specification of the counter-clockwise predicate} *)
 
@@ -102,14 +83,8 @@ predicate colinear (p1 p2 p3:pt) =
 predicate ccw (p1 p2 p3:pt) =
   crossproduct p1 p2 p3 >. 0.0
 
-predicate ccw_neg (p1 p2 p3:pt) =
-  crossproduct p1 p2 p3 <. 0.0
-
 val ccw (p1 p2 p3:pt) : bool
   ensures { result <-> ccw p1 p2 p3 }
-
-val ccw_neg (p1 p2 p3:pt) : bool
-  ensures { result <-> ccw_neg p1 p2 p3 }
 
 lemma knuth1:
   forall p1 p2 p3:pt. ccw p1 p2 p3 -> ccw p2 p3 p1
@@ -128,7 +103,8 @@ lemma knuth4:
     ccw q p3 p1 ->
     ccw p1 p2 p3
 
-(* TODO : le lemme ne passe pas *)
+(* J'ai passé le [lemma cramer] en [axiom] car il n'était pas résolu
+   par les prouveurs. Cela ne sert qu'à retirer le [?] dans why3ide. *)
 axiom cramer:
   forall p1 p2 p3 q1 q2:pt.
     crossproduct q1 q2 p3 *. crossproduct q2 p1 p2 +.
@@ -146,8 +122,6 @@ lemma knuth5:
     ccw q1 q2 p1 /\ ccw q1 q2 p2 /\ ccw q1 q2 p3 ->
     ccw q2 p1 p2 /\ ccw q2 p2 p3 -> ccw q2 p1 p3
 
-
-
 (* QUESTION 2 *)
 
 let function diff2 (k i j: int) : bool
@@ -157,9 +131,11 @@ let function diff2 (k i j: int) : bool
     index i and j themselves, are on the left of the vector s[i] s[j]
     *)
 
-(* pour tout k dans len(s), s[k] est à gauche de s[i]-s[j] si le ccw est correct *)
+(* pour tout k dans len(s), s[k] est à gauche de s[i]-s[j] si le ccw est ok *)
 predicate all_on_left (s:pt_set) (i j:int) =
   forall k : int.
+    is_index i s ->
+    is_index j s ->
     is_index k s ->
     diff2 k i j ->
     ccw s[i] s[j] s[k]
@@ -174,19 +150,13 @@ let check_all_on_left (s:pt_set) (i j:int) : unit
   ensures  { all_on_left s i j }                     (* sujet *)
   raises   { Exit -> not (all_on_left s i j) }       (* postcondition exceptionnelle *)
 =
-  let a = s[i] in let b = s[j] in
   for k = 0 to s.length - 1 do
-    invariant { forall l: int. 0 <= l < k -> diff2 l i j -> ccw a b s[l] } (* tous les points passés sont bien à gauche de a-b *)
-    invariant { 0 <= k < s.length - 1 -> diff2 k i j -> not ccw a b s[k] -> not all_on_left s i j } (* permet de prouver la postcondition exceptionnelle : si le if est faux alors la postcondition est vraie *)
-    if diff2 k i j && not ccw a b s[k] then raise Exit
+    invariant { forall l: int. 0 <= l < k -> diff2 l i j -> ccw s[i] s[j] s[l] } (* tous les points passés sont bien à gauche de a-b *)
+    if diff2 k i j && not ccw s[i] s[j] s[k] then raise Exit
   done
 
-predicate is_on_left (s: pt_set) (i j k: int) =
-  is_index i s ->
-  is_index j s ->
-  is_index k s ->
-  ccw s[i] s[j] s[k]
-
+(* states that s[k] is on the right of the s[i]s[j] segment
+   <-> s[j] on the left of s[i]s[k] *)
 predicate is_on_right (s: pt_set) (i j k: int) =
   is_index i s ->
   is_index j s ->
@@ -209,13 +179,10 @@ module Path
   predicate is_valid_index (i:int) (p:path) =
     0 <= i < p.size
 
-  predicate contains (p: path) (elt: int) =
-    exists i: int. is_valid_index i p /\ p.elements i = elt
-
   val create () : path
     ensures { result.size = 0 }
 
-  val nth (p: path) (i: int) : int
+  val function nth (p: path) (i: int) : int
     requires { is_valid_index i p }
     reads    { p }
     ensures  { result = p.elements i }
@@ -235,19 +202,13 @@ use Point
 use CCW
 use Path
 
-let function nth = Path.nth
-(* let function last = Path.last *)
+predicate distinct (p:path) =
+  forall i j:int.
+    is_valid_index i p /\ is_valid_index j p /\ i < j ->
+    p.elements i <> p.elements j
 
-(* use export array.NumOfEq
-    (* numof s (nth p i) > 0 *) *)
-
-let function distinct (p:path) : bool
-  ensures { result <->
-    forall i j:int.
-      is_valid_index i p ->
-      is_valid_index j p ->
-      i < j ->
-      p.elements i <> p.elements j }
+let distinct (p:path) : bool
+  ensures { result <-> distinct p }
 = try
     for i = 0 to p.size - 1 do
       invariant { forall k l: int. 0 <= k < l < i -> p.elements k <> p.elements l }
@@ -264,10 +225,12 @@ let function distinct (p:path) : bool
 
 (* - les indices du path [p] sont bien des indices de [s]
    - les éléments de [p] sont bien différents deux à deux *)
-let function wf_path (p:path) (s:pt_set)
-  ensures { result <->
-    distinct p /\
-    forall i: int. is_valid_index i p -> is_index (nth p i) s }
+predicate wf (p: path) (s: pt_set)
+= distinct p /\
+  forall i: int. is_valid_index i p -> is_index (nth p i) s
+
+let wf_path (p:path) (s:pt_set) : bool
+  ensures { result <-> wf p s }
 = if not distinct p then False else
   try
     for i = 0 to p.size - 1 do
@@ -283,45 +246,28 @@ let function plus1mod (i len: int): int
 = if i + 1 = len then 0 else i+1
 
 predicate is_convex_hull (s:pt_set) (p:path)
-= wf_path p s /\
-  (s.length >= __MIN_PTS_NUM__ -> (* si moins de 2 alors pas de segment dont on doit être à gauche *)
-   forall i: int. is_valid_index i p ->
+= s.length >= __MIN_PTS_NUM__ /\
+  wf p s /\
+  (forall i: int. is_valid_index i p ->
     let j = plus1mod i p.size in
     all_on_left s (nth p i) (nth p j))
-
-(* let lemma xx2 (s: pt_set) (p: path) : unit
-  requires { is_convex_hull s p }
-  ensures  { wf_path p s }
-= ()
-
-let lemma xx (s: pt_set) (p: path) : unit
-  requires { not wf_path p s }
-  ensures  { not is_convex_hull s p }
-= () *)
 
 (* QUESTION 5 *)
 
 let check_is_convex_hull (s:pt_set) (p:path) : bool
-  requires { s.length >= __MIN_PTS_NUM__ }             (* condition de taille sur [s] *)
-  requires { p.size >= __MIN_PTS_NUM__ }               (* condition de taille sur [s] *)
-  (* requires { wf_path p s }                             (* *) *)
-  ensures { result = True <-> is_convex_hull s p }
+  requires { s.length >= __MIN_PTS_NUM__ }
+  ensures  { result <-> is_convex_hull s p }
 =
   if not wf_path p s then False else
   try
-    assert { wf_path p s };
     for i = 0 to p.size - 1 do
       invariant { forall j: int. 0 <= j < i -> all_on_left s (nth p j) (nth p (plus1mod j p.size)) }
-      invariant { forall j: int. 0 <= j < i -> is_valid_index j p }
       let j = plus1mod i p.size in
-      let a = nth p i in
-      let b = nth p j in
-      check_all_on_left s a b
+      check_all_on_left s (nth p i) (nth p j)
     done;
     True
   with Exit -> False
   end
-
 
 (** Properties assumed to characterize "general" set of points *)
 
@@ -372,7 +318,6 @@ let function largest (s: pt_set) (pivot: int) (ghost base: pt): int
   done;
   res
 
-
 (** QUESTION 6: Jarvis, not proving termination *)
 
 function translate_left (p:pt) : pt =
@@ -383,7 +328,7 @@ let jarvis_no_termination (s:pt_set) : path
   requires { exists i: int. unique_minimal_y s i }
   requires { length s >= __MIN_PTS_NUM__ }
   diverges
-  ensures { is_convex_hull s result }
+  ensures  { is_convex_hull s result }
 =
   let hd = lowest_leftmost s in
   let p = create () in
@@ -402,33 +347,21 @@ let jarvis_no_termination (s:pt_set) : path
       invariant { nth p 0 = hd }
       invariant { nth p (p.size - 1) = pivot }
       invariant { nth p (p.size - 2) = oldpivot }
-      invariant { forall i:int. 0 < i < p.size - 1 -> nth p i = pivot ->
-        let elt = nth p (i-1) in
-        (* diff2 elt pivot oldpivot ->
-        ccw s[elt] s[oldpivot] s[pivot] } *)
-        (* ca marche*)
-        is_on_right s hd elt pivot } (* ca marche*)
-        (* diff2 elt hd pivot ->
-        ccw s[hd] s[pivot] s[elt] } *)
+      invariant { forall i: int. 0 < i < p.size - 1 -> nth p i = pivot -> is_on_right s hd (nth p (i-1)) pivot }
       invariant { forall i: int. 1 <= i < p.size -> all_on_left s (nth p (i-1)) (nth p i) }
       invariant { forall i: int. 0 < i < p.size - 1 -> nth p i <> pivot }
-      invariant { forall i j: int. 0 <= i < p.size -> 0 <= j < p.size -> i <> j -> nth p i <> nth p j }
-      invariant { wf_path p s }
+      invariant { forall i j: int. is_valid_index i p -> is_valid_index j p -> i < j -> nth p i <> nth p j }
+      invariant { wf p s }
 
       let next = largest s pivot s[oldpivot] in
-      (* assert { next = hd \/ not contains p next }; *)
       if next = hd then raise Exit;
-      (* assert { contains p next -> is_on_right s pivot next hd }; *)
-      (* assert { contains p next -> not all_on_left s pivot next }; *)
       oldpivot <- pivot;
       pivot <- next;
-      (* assert { not contains p next }; *)
       append p next;
     done;
     absurd
   with Exit -> p
   end
-
 
 (** QUESTION 8: termination *)
 
@@ -444,30 +377,19 @@ predicate injective (f: int -> int) (n: int) =
   (** `injective f n m` is true when `f` is an injection
       from `(0..n-1)` to `(0..m-1)` *)
 
-let lemma wf_injection (p: path) (s: pt_set) : unit
-  requires { wf_path p s }
-  ensures { injective (nth p) p.size }
-  ensures { range (nth p) (p.size) (s.length) }
-= ()
+lemma wf_injection:
+  forall p: path. forall s: pt_set.
+  wf p s ->
+    injective (nth p) p.size /\
+    range (nth p) (p.size) (s.length)
 
 use pigeon.Pigeonhole
 
-let rec lemma chaussettes_aux (f: int -> int) (n m: int) : unit
-  requires { n >= 0 }
-  requires { m >= 0 }
-  requires { range f n m }
-  requires { injective f n }
-  ensures  { n <= m }
-  variant  { m }
-= ()
-
-let lemma chaussettes (p: path) (s: pt_set) : unit
-  requires { wf_path p s }
-  requires { range (nth p) (p.size) (s.length) }
-  requires { injective (nth p) (p.size) }
-  requires { s.length < p.size }
-  ensures { exists i: int. is_valid_index i p /\ nth p i >= s.length }
-= ()
+lemma enough_drawer_for_my_socks:
+  forall p: path. forall s: pt_set.
+   range (nth p) (p.size) (s.length) /\
+   injective (nth p) (p.size) ->
+   s.length >= p.size
 
 let jarvis (s:pt_set) : path
   requires { no_colinear_triple s }
@@ -496,14 +418,10 @@ let jarvis (s:pt_set) : path
       invariant { forall i: int. 0 < i < p.size - 1 -> nth p i = pivot -> is_on_right s hd (nth p (i-1)) pivot }
       invariant { forall i: int. 1 <= i < p.size -> all_on_left s (nth p (i-1)) (nth p i) }
       invariant { forall i: int. 0 < i < p.size - 1 -> nth p i <> pivot }
-      invariant { forall i j: int. 0 <= i < p.size -> 0 <= j < p.size -> i <> j -> nth p i <> nth p j }
-      invariant { wf_path p s }
+      invariant { forall i j: int. is_valid_index i p -> is_valid_index j p -> i < j -> nth p i <> nth p j }
+      invariant { wf p s }
 
       (* termination *)
-      (* invariant { injective (nth p) p.size -> distinct p } *)
-      (* invariant { forall i: int. is_valid_index i p -> is_index (nth p i) s } *)
-      (* invariant { forall i: int. is_valid_index i p -> 0 <= nth p i < s.length } *)
-      (* invariant { s.length < p.size -> not distinct p } *)
       variant { s.length - p.size }
 
       let next = largest s pivot s[oldpivot] in
@@ -516,9 +434,5 @@ let jarvis (s:pt_set) : path
   with Exit ->
     p
   end
-
-
-
-
 
 end

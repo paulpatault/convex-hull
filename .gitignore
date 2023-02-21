@@ -2,3 +2,15 @@ convex_hull/why3shapes.gz.bak
 convex_hull/why3session.xml.bak
 convex_hull.mlw.bak
 convex_hull/why3shapes.gz.bak
+rapport/tex/_build/main.dvi
+rapport/_build
+
+**/_minted-rapport/
+*.aux
+*.out
+*.log
+*.fls
+*.bbl
+*.fdb*
+*.blg
+*.gz
