@@ -459,14 +459,29 @@ let rec ghost inverse (l:int) (f:int -> int) (v:int) : int
 let lemma wf_injection (p: path) (s: pt_set) : unit
   requires { wf_path p s }
   ensures { injective (nth p) p.size }
+  ensures { range (nth p) (p.size) (s.length) }
 = ()
 
+let lemma chaussettes_aux (f: int -> int) (n m: int) : unit
+  requires { range f n m }
+  requires { injective f n }
+  ensures  { n <= m }
+  (* ensures  { not n > m } *)
+= ()
+
+let lemma chaussettes (p: path) (s: pt_set) : unit
+  requires { wf_path p s }
+  requires { range (nth p) (p.size) (s.length) }
+  requires { injective (nth p) (p.size) }
+  requires { s.length < p.size }
+  ensures { exists i: int. is_valid_index i p /\ nth p i >= s.length }
+= ()
 
 let jarvis (s:pt_set) : path
   requires { no_colinear_triple s }
   requires { exists i: int. unique_minimal_y s i }
   requires { length s >= __MIN_PTS_NUM__ }
-  (* ensures { is_convex_hull s result } *)
+  ensures { is_convex_hull s result }
 =
   let hd = lowest_leftmost s in
   let p = create () in
@@ -478,17 +493,39 @@ let jarvis (s:pt_set) : path
   let ref pivot = next in
   try
     while True do
+      (* post-condition *)
       invariant { is_index pivot s }
       invariant { is_index oldpivot s }
+      invariant { p.size > 0 }
+      invariant { nth p 0 <> pivot }
+      invariant { nth p 0 = hd }
+      invariant { nth p (p.size - 1) = pivot }
+      invariant { nth p (p.size - 2) = oldpivot }
+      invariant { forall i:int. 0 < i < p.size - 1 -> nth p i = pivot ->
+        let elt = nth p (i-1) in
+        (* diff2 elt pivot oldpivot ->
+        ccw s[elt] s[oldpivot] s[pivot] } *)
+        (* ca marche*)
+        is_on_right s hd elt pivot } (* ca marche*)
+        (* diff2 elt hd pivot ->
+        ccw s[hd] s[pivot] s[elt] } *)
+      invariant { forall i: int. 1 <= i < p.size -> all_on_left s (nth p (i-1)) (nth p i) }
+      invariant { forall i: int. 0 < i < p.size - 1 -> nth p i <> pivot }
+      invariant { forall i j: int. 0 <= i < p.size -> 0 <= j < p.size -> i <> j -> nth p i <> nth p j }
       invariant { wf_path p s }
+
+      (* termination *)
       invariant { injective (nth p) p.size }
       invariant { injective (nth p) p.size -> distinct p }
-      invariant { s.length < p.size -> exists i j: int. is_valid_index i p /\ is_valid_index j p /\ i < j /\ nth p i = nth p j }
-      invariant { (exists i j: int. is_valid_index i p /\ is_valid_index j p /\ i < j /\ nth p i = nth p j) -> not distinct p }
-
+      invariant { forall i: int. is_valid_index i p -> is_index (nth p i) s }
+      invariant { forall i: int. is_valid_index i p -> 0 <= nth p i < s.length }
+      invariant { range (nth p) (p.size) (s.length) }
+      (* invariant { s.length < p.size -> (exists i: int. is_valid_index i p /\ nth p i >= s.length) } *)
+      (* invariant { s.length < p.size -> not injective (nth p) p.size } *)
+      (* invariant { (exists i j: int. is_valid_index i p /\ is_valid_index j p /\ i < j /\ nth p i = nth p j) -> not distinct p } *)
       invariant { s.length < p.size -> not distinct p }
-      invariant { not distinct p -> not wf_path p s }
-      invariant { s.length < p.size -> not wf_path p s }
+      (* invariant { not distinct p -> not wf_path p s } *)
+      (* invariant { s.length < p.size -> not wf_path p s } *)
       variant { s.length - p.size }
 
       let next = largest s pivot s[oldpivot] in
